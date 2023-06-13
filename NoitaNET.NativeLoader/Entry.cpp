@@ -37,7 +37,7 @@ void Entry::InternalLoad(HMODULE hMod)
 
     NativeLog::LogInformation(Util::FormatString("Set root directory: %s", DllRootDirectory.c_str()));
 
-    for (auto& modFolder : LoadedNoitaMods)
+    for (auto& modFolder : ActiveNoitaMods)
     {
         NativeLog::LogInformation(Util::FormatString("Loaded Mod ID: %s", modFolder.c_str()));
     }
@@ -60,7 +60,7 @@ bool Entry::IsDotNetLoaded()
     return LoadedDotNet;
 }
 
-void Entry::SetLoadedNoitaMods(const char** modFolders, int modCount)
+void Entry::SetActiveNoitaMods(const char** modFolders, int modCount)
 {
-    LoadedNoitaMods = std::vector<std::string>(modFolders, modFolders + modCount);
+    ActiveNoitaMods = std::vector<std::string>(modFolders, modFolders + modCount);
 }

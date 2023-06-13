@@ -17,7 +17,7 @@ private:
 
     static void InternalLoad(HMODULE hMod);
 
-    static inline std::vector<std::string> LoadedNoitaMods = {};
+    static inline std::vector<std::string> ActiveNoitaMods = {};
 
 public:
     static void Load(HMODULE hMod);
@@ -26,5 +26,5 @@ public:
 
     static bool IsDotNetLoaded();
 
-    static void SetLoadedNoitaMods(const char** modFolders, int modCount);
+    static void SetActiveNoitaMods(const char** modFolders, int modCount);
 };
