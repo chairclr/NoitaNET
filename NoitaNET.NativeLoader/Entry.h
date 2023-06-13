@@ -1,6 +1,7 @@
 #pragma once
 #include "framework.h"
 #include <string>
+#include <vector>
 #include "Util.h"
 #include "DotNetHost.h"
 #include "NativeLog.h"
@@ -16,10 +17,14 @@ private:
 
     static void InternalLoad(HMODULE hMod);
 
+    static inline std::vector<std::string> LoadedNoitaMods = {};
+
 public:
     static void Load(HMODULE hMod);
 
     static const std::string& GetDllRootDirectory();
 
-    static const bool IsDotNetLoaded();
+    static bool IsDotNetLoaded();
+
+    static void SetLoadedNoitaMods(const char** modFolders, int modCount);
 };

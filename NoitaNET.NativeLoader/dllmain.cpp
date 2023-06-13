@@ -15,3 +15,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     return TRUE;
 }
 
+extern "C" __declspec(dllexport)
+void RegisterActiveMods(const char** modFolders, int folderCount)
+{
+    Entry::SetActiveNoitaMods(modFolders, folderCount);
+}
