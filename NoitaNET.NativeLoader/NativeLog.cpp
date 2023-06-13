@@ -4,7 +4,7 @@ static std::ofstream OutputFileStream;
 
 bool NativeLog::Init()
 {
-    std::string logFile = Entry::GetDllRootDirectory() + "\\Coolua.NativeLoader_logs.txt";
+    std::string logFile = Entry::GetDllRootDirectory() + "\\NoitaNET.NativeLoader_logs.txt";
 
     OutputFileStream = std::ofstream(logFile);
 
