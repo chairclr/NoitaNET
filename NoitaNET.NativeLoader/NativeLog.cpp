@@ -56,7 +56,7 @@ void NativeLog::LogInformation(const std::string& message)
 {
     if (HasOutputFileStream)
     {
-        OutputFileStream << "[Info]    " << message << "\n";
+        OutputFileStream << "[Information] " << message << "\n";
         OutputFileStream.flush();
     }
 
@@ -64,7 +64,7 @@ void NativeLog::LogInformation(const std::string& message)
     {
         // Light grey console text
         SetConsoleTextAttribute(ConsoleOutputHandle, 8);
-        std::cout <<        "[Info]    " << message << "\n";
+        std::cout <<        "[Information] " << message << "\n";
     }
 }
 
@@ -72,7 +72,7 @@ void NativeLog::LogWarning(const std::string& message)
 {
     if (HasOutputFileStream)
     {
-        OutputFileStream << "[Warning] " << message << "\n";
+        OutputFileStream << "[Warning]     " << message << "\n";
         OutputFileStream.flush();
     }
 
@@ -80,7 +80,7 @@ void NativeLog::LogWarning(const std::string& message)
     {
         // Yellow console text
         SetConsoleTextAttribute(ConsoleOutputHandle, 14);
-        std::cout <<        "[Warning] " << message << "\n";
+        std::cout <<        "[Warning]     " << message << "\n";
     }
 }
 
@@ -88,7 +88,7 @@ void NativeLog::LogError(const std::string& message)
 {
     if (HasOutputFileStream)
     {
-        OutputFileStream << "[Error]   " << message << "\n";
+        OutputFileStream << "[Error]       " << message << "\n";
         OutputFileStream.flush();
     }
 
@@ -96,6 +96,6 @@ void NativeLog::LogError(const std::string& message)
     {
         // Red console text
         SetConsoleTextAttribute(ConsoleOutputHandle, 12);
-        std::cout <<        "[Error]   " << message << "\n";
+        std::cout <<        "[Error]       " << message << "\n";
     }
 }

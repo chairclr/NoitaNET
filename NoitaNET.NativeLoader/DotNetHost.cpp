@@ -50,14 +50,14 @@ bool DotNetHost::LoadHost()
 
 bool DotNetHost::LoadAndStartManagedAssembly()
 {
-    std::wstring managedLibraryPath = (Util::StringToWide(Entry::GetDllRootDirectory()) + L"\\NoitaNET.Loader\\NoitaNET.Loader.dll");
+    std::string managedLibraryPath = Entry::GetDllRootDirectory() + "\\NoitaNET.Loader\\NoitaNET.Loader.dll";
 
     NativeLog::LogInformation(Util::FormatString("Loading managed assmelby from path: %s", managedLibraryPath.c_str()));
 
     // Actually load the library and get the entry function
     EntryDelegate entry = NULL;
     int rc = LoadAssemblyAndGetFunctionPointer(
-        managedLibraryPath.c_str(),
+        Util::StringToWide(managedLibraryPath).c_str(),
         // Specify the fully qualified type name and assembly
         L"NoitaNET.Loader.Loader, NoitaNET.Loader",
         // Function to get pointer of inside of the specified type

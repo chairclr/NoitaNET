@@ -7,6 +7,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NoitaNET.NativeLoader", "No
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoitaNET.Loader", "NoitaNET.Loader\NoitaNET.Loader.csproj", "{764DCCE1-FCD5-4E65-887F-4B3C3AF76426}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mod", "Mod", "{1C539E30-DB23-4D8B-A728-AD2F57D3AF7D}"
+	ProjectSection(SolutionItems) = preProject
+		Mod\init.lua = Mod\init.lua
+		Mod\mod.xml = Mod\mod.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86

@@ -43,9 +43,12 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <!-- Import $(NetHostDir) macro -->
   <ImportGroup>
+    <!-- Import $(NetHostDir) macro -->
     <Import Project="NetHostDir-$(PlatformTarget).props" />
+
+    <!-- Copy lua mod files to output directory -->
+    <Import Project="ModBuild.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

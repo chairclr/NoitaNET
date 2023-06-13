@@ -8,9 +8,6 @@ public class Loader
 
     public static void Entry()
     {
-        for (int i = 0; i < 5; i++)
-        {
-
-        }
+        Logger.Instance.LogInformation("Successfully loaded NoitaNET.Loader");
     }
 }
