@@ -27,6 +27,6 @@ jobs:
       with:
         dotnet-version: 7.0.x
     - name: Restore
-      run: dotnet restore
+      run: dotnet restore /p:Configuration=${{matrix.configuration}} /p:Platform=x86
     - name: Build
       run: msbuild /p:Configuration=${{matrix.configuration}} /p:Platform=x86
