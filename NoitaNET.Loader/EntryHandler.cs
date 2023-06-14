@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using NoitaNET.API;
 using NoitaNET.Loader.Services;
 
 namespace NoitaNET.Loader;
@@ -22,6 +23,10 @@ public unsafe class EntryHandler
             managedActiveMods[i] = Marshal.PtrToStringUTF8((nint)activeMods[i])!;
         }
 
-        List<Mod> mods = ModFinderService.FindMods(managedActiveMods);
+        List<ModDescription> mods = ModFinderService.FindMods(managedActiveMods);
+
+        ModLoadHandler modLoadHandler = new ModLoadHandler(mods);
+
+        modLoadHandler.LoadMods();
     }
 }

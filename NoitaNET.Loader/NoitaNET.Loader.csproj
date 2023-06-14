@@ -9,10 +9,13 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
     <OutputPath>../$(PlatformTarget)/$(Configuration)/NoitaNET.Loader</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NoitaNET.API\NoitaNET.API.csproj" />
+  </ItemGroup>
 
 </Project>

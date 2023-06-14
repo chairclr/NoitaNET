@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -6,6 +6,10 @@
     <Nullable>enable</Nullable>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NoitaNET.API\NoitaNET.API.csproj" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Update="mod.xml">

@@ -6,7 +6,7 @@ namespace NoitaNET.Loader;
 /// Represents the <![CDATA[<Mod />]]> element in mod.xml
 /// </summary>
 [XmlType("Mod")]
-internal class NoitaModXml
+public class NoitaModDescriptionXml
 {
     [XmlAttribute("name")]
     public string Name { get; set; } = "";
@@ -21,7 +21,7 @@ internal class NoitaModXml
 /// <summary>
 /// Represents a mod
 /// </summary>
-internal class Mod
+internal class ModDescription
 {
     public string Name { get; set; }
 
@@ -31,7 +31,7 @@ internal class Mod
 
     public Version Version { get; set; }
 
-    public Mod(NoitaModXml modXML)
+    public ModDescription(NoitaModDescriptionXml modXML)
     {
         Name = modXML.Name;
 

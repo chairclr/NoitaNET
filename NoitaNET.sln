@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mod", "Mod", "{1C539E30-DB2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoitaNET.TestMod", "NoitaNET.TestMod\NoitaNET.TestMod.csproj", "{47AAA86B-765E-4CA3-AED1-0A23CBF663FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoitaNET.API", "NoitaNET.API\NoitaNET.API.csproj", "{BF7B06DB-FAC4-453B-9750-61034E68EDFB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,14 @@ Global
 		{47AAA86B-765E-4CA3-AED1-0A23CBF663FF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{47AAA86B-765E-4CA3-AED1-0A23CBF663FF}.Release|x86.ActiveCfg = Release|Any CPU
 		{47AAA86B-765E-4CA3-AED1-0A23CBF663FF}.Release|x86.Build.0 = Release|Any CPU
+		{BF7B06DB-FAC4-453B-9750-61034E68EDFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF7B06DB-FAC4-453B-9750-61034E68EDFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF7B06DB-FAC4-453B-9750-61034E68EDFB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BF7B06DB-FAC4-453B-9750-61034E68EDFB}.Debug|x86.Build.0 = Debug|Any CPU
+		{BF7B06DB-FAC4-453B-9750-61034E68EDFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF7B06DB-FAC4-453B-9750-61034E68EDFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF7B06DB-FAC4-453B-9750-61034E68EDFB}.Release|x86.ActiveCfg = Release|Any CPU
+		{BF7B06DB-FAC4-453B-9750-61034E68EDFB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
