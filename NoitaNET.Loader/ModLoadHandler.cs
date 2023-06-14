@@ -37,6 +37,7 @@ internal class ModLoadHandler
             Logger.Instance.LogInformation($"Loading {mod.Name} ({mod.AssemblyPath})");
 
             Assembly assembly;
+
             try
             {
                 assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(mod.AssemblyPath);
@@ -79,7 +80,7 @@ internal class ModLoadHandler
             Type type = types[i];
 
             // We can't create an instance of an abstract or generic type with Acitvator
-            if (!type.IsAbstract && !type.IsGenericType && type.IsAssignableTo(typeof(Mod)))
+            if (!type.IsAbstract && !type.IsGenericType && !type.IsInterface && type.IsAssignableTo(typeof(Mod)))
             {
                 if (type.CustomAttributes.Any(x => x.AttributeType == typeof(ModEntryAttribute)))
                 {
