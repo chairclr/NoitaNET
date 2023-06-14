@@ -1,11 +1,5 @@
 <!-- The purpose of this file is to copy init.lua and mod.xml to the build output directory -->
-<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <GenerateDependencyFile>false</GenerateDependencyFile>
-  </PropertyGroup>
-  
+<Project>
   <PropertyGroup>
     <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
     <OutputPath>../$(PlatformTarget)/$(Configuration)</OutputPath>

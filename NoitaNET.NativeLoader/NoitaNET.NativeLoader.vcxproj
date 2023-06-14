@@ -45,10 +45,10 @@
   </ImportGroup>
   <ImportGroup>
     <!-- Import $(NetHostDir) macro -->
-    <Import Project="NetHostDir-$(PlatformTarget).props" />
+    <Import Project="NetHostDir-$(PlatformTarget).targets" />
 
     <!-- Copy lua mod files to output directory -->
-    <Import Project="ModBuild.props" />
+    <Import Project="ModBuild.targets" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
