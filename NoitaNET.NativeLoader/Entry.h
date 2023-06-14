@@ -6,6 +6,7 @@
 #include "DotNetHost.h"
 #include "NativeLog.h"
 #include <lua.hpp>
+#include <MinHook.h>
 
 class Entry
 {

@@ -3,7 +3,7 @@
     "NoitaNET.API": {
       "commandName": "Project",
       "hotReloadEnabled": true,
-      "nativeDebugging": false
+      "nativeDebugging": true
     }
   }
 }

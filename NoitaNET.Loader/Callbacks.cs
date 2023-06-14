@@ -22,4 +22,28 @@ public static class Callbacks
             Mods[i].OnWorldPostUpdate();
         }
     }
+
+    public static void OnModPreInit()
+    {
+        for (int i = 0; i < Mods.Count; i++)
+        {
+            Mods[i].OnModPreInit();
+        }
+    }
+
+    public static void OnModInit()
+    {
+        for (int i = 0; i < Mods.Count; i++)
+        {
+            Mods[i].OnModInit();
+        }
+    }
+
+    public static void OnModPostInit()
+    {
+        for (int i = 0; i < Mods.Count; i++)
+        {
+            Mods[i].OnModPostInit();
+        }
+    }
 }

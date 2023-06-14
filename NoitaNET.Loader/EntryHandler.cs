@@ -12,6 +12,12 @@ public unsafe class EntryHandler
         public delegate*<void> OnWorldPostUpdate;
 
         public delegate*<void> OnWorldPreUpdate;
+
+        public delegate*<void> OnModPreInit;
+
+        public delegate*<void> OnModInit;
+
+        public delegate*<void> OnModPostInit;
     }
 
     public delegate void EntryDelegate(char** activeMods, int activeModsCount);
@@ -45,7 +51,10 @@ public unsafe class EntryHandler
         NativeCallbacks callbacks = new NativeCallbacks
         {
             OnWorldPostUpdate = &Callbacks.OnWorldPostUpdate,
-            OnWorldPreUpdate = &Callbacks.OnWorldPreUpdate
+            OnWorldPreUpdate = &Callbacks.OnWorldPreUpdate,
+            OnModPreInit = &Callbacks.OnModPreInit,
+            OnModInit = &Callbacks.OnModInit,
+            OnModPostInit = &Callbacks.OnModPostInit,
         };
 
         *outCallbacks = callbacks;

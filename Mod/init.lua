@@ -10,11 +10,17 @@ void WaitForDotnetInit();
 
 typedef void (*FOnWorldPostUpdate)();
 typedef void (*FOnWorldPreUpdate)();
+typedef void (*FOnModPreInit)();
+typedef void (*FOnModInit)();
+typedef void (*FOnModPostInit)();
 
 typedef struct
 {
     FOnWorldPostUpdate OnWorldPostUpdate;
     FOnWorldPreUpdate OnWorldPreUpdate;
+    FOnModPreInit OnModPreInit;
+    FOnModInit OnModInit;
+    FOnModPostInit OnModPostInit;
 } Callbacks;
 
 Callbacks GetCallbacks();
@@ -45,4 +51,16 @@ end
 
 function OnWorldPreUpdate()
     callbackTable.OnWorldPreUpdate()
+end
+
+function OnModPreInit()
+    callbackTable.OnModPreInit();
+end
+
+function OnModInit()
+    callbackTable.OnModInit();
+end
+
+function OnModPostInit()
+    callbackTable.OnModPostInit();
 end

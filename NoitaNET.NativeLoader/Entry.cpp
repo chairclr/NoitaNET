@@ -13,6 +13,12 @@ void Entry::Load(HMODULE hMod)
     CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)InternalLoad, hMod, 0, nullptr);
 }
 
+static bool Callback()
+{
+    NativeLog::LogInformation("MH test successfull");
+    return false;
+}
+
 void Entry::InternalLoad(HMODULE hMod)
 {
     // Store the module handle for possible? later use in unloading or something like that
@@ -40,6 +46,14 @@ void Entry::InternalLoad(HMODULE hMod)
         NativeLog::LogInformation(Util::FormatString("Loaded Mod ID: %s", modFolder.c_str()));
     }
 
+    // Setup MinHook
+    MH_STATUS initStatus = MH_Initialize();
+    if (initStatus != MH_OK)
+    {
+        NativeLog::LogError(Util::FormatString("CRITICAL ERROR: Failed to initialize MinHook: %i", initStatus));
+        return;
+    }
+
     // Only load .NET once, just in case
     if (!IsDotNetLoaded())
     {
@@ -47,6 +61,7 @@ void Entry::InternalLoad(HMODULE hMod)
         LoadedDotNet = true;
     }
 }
+
 
 const std::string& Entry::GetDllRootDirectory()
 {

@@ -24,4 +24,10 @@ public abstract class Mod
     public virtual void OnWorldPreUpdate() { }
 
     public virtual void OnWorldPostUpdate() { }
+
+    public virtual void OnModPreInit() { }
+
+    public virtual void OnModInit() { }
+
+    public virtual void OnModPostInit() { }
 }
