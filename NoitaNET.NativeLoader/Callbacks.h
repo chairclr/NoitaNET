@@ -1,2 +1,9 @@
 #pragma once
-#include "Entry.h"
+typedef void (*FOnWorldPostUpdate)();
+typedef void (*FOnWorldPreUpdate)();
+
+typedef struct
+{
+    FOnWorldPostUpdate OnWorldPostUpdate;
+    FOnWorldPreUpdate OnWorldPreUpdate;
+} Callbacks;

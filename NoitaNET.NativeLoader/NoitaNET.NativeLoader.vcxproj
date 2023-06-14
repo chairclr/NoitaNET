@@ -112,6 +112,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Callbacks.h" />
+    <ClInclude Include="Exports.h" />
     <ClInclude Include="DotNetHost.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Entry.h" />
@@ -119,7 +120,7 @@
     <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Callbacks.cpp" />
+    <ClCompile Include="Exports.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="DotNetHost.cpp" />
     <ClCompile Include="Entry.cpp" />

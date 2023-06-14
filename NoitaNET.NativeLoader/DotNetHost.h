@@ -1,6 +1,9 @@
 #pragma once
 #include "framework.h"
 #include "Entry.h"
+#include "Callbacks.h"
+
+#include <map>
 
 // nethost core files
 #include <nethost.h>
@@ -13,10 +16,14 @@
 // Should have the same definition as the delegate specified when loading the assembly
 typedef void (CORECLR_DELEGATE_CALLTYPE* EntryDelegate)(const char** activeMods, int activeModsCount);
 
+typedef void (CORECLR_DELEGATE_CALLTYPE* GetCallbackHandlersDelegate)(Callbacks* outCallbacks);
+
 class DotNetHost
 {
 public:
     static bool LoadHost();
+
+    static Callbacks GetCallbacks();
 
 private:
     static inline hostfxr_initialize_for_runtime_config_fn HostFXRInitFn = nullptr;
@@ -29,4 +36,6 @@ private:
     static bool LoadHostFXR();
 
     static void* GetExport(HMODULE hMod, const char* name);
+
+    static inline Callbacks StoredCallbacks = {};
 };

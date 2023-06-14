@@ -1,10 +1,19 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using NoitaNET.Loader.Services;
 
 namespace NoitaNET.Loader;
 
 public unsafe class EntryHandler
 {
+    public struct NativeCallbacks
+    {
+        public delegate*<void> OnWorldPostUpdate;
+
+        public delegate*<void> OnWorldPreUpdate;
+    }
+
     public delegate void EntryDelegate(char** activeMods, int activeModsCount);
 
     /// <summary>
@@ -27,5 +36,18 @@ public unsafe class EntryHandler
         ModLoadHandler modLoadHandler = new ModLoadHandler(mods);
 
         modLoadHandler.LoadMods();
+    }
+
+    public delegate void GetCallbackHandlersDelegate(NativeCallbacks* outCallbacks);
+
+    public static void GetCallbackHandlers(NativeCallbacks* outCallbacks)
+    {
+        NativeCallbacks callbacks = new NativeCallbacks
+        {
+            OnWorldPostUpdate = &Callbacks.OnWorldPostUpdate,
+            OnWorldPreUpdate = &Callbacks.OnWorldPreUpdate
+        };
+
+        *outCallbacks = callbacks;
     }
 }
