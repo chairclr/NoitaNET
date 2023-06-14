@@ -3,7 +3,7 @@ using NoitaNET.Loader.Services;
 
 namespace NoitaNET.Loader;
 
-public unsafe class Loader
+public unsafe class EntryHandler
 {
     public delegate void EntryDelegate(char** activeMods, int activeModsCount);
 

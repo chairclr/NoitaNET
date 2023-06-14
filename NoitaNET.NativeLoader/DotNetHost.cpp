@@ -59,12 +59,12 @@ bool DotNetHost::LoadAndStartManagedAssembly()
     int rc = LoadAssemblyAndGetFunctionPointer(
         Util::StringToWide(managedLibraryPath).c_str(),
         // Specify the fully qualified type name and assembly
-        L"NoitaNET.Loader.Loader, NoitaNET.Loader",
+        L"NoitaNET.Loader.EntryHandler, NoitaNET.Loader",
         // Function to get pointer of inside of the specified type
         L"Entry",
         // Delegate that defines the signature of the entry function
         // This is not required, but it can be useful later when we want to pass parameters or something to the entry function
-        L"NoitaNET.Loader.Loader+EntryDelegate, NoitaNET.Loader",
+        L"NoitaNET.Loader.EntryHandler+EntryDelegate, NoitaNET.Loader",
         NULL,
         (void**)&entry);
 
