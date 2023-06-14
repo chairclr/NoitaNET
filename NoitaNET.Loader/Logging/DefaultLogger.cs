@@ -77,7 +77,8 @@ internal class DefaultLogger : Logger
 
         if (FileStream is not null)
         {
-            FileStream.Write(MemoryMarshal.AsBytes(formatted.AsSpan()));
+            // It works lol
+            FileStream.Write(MemoryMarshal.AsBytes((formatted + "\n").AsSpan()));
             FileStream.Flush();
         }
     }

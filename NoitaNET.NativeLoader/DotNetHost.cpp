@@ -52,7 +52,7 @@ bool DotNetHost::LoadAndStartManagedAssembly()
 {
     std::string managedLibraryPath = Entry::GetDllRootDirectory() + "\\NoitaNET.Loader\\NoitaNET.Loader.dll";
 
-    NativeLog::LogInformation(Util::FormatString("Loading managed assmelby from path: %s", managedLibraryPath.c_str()));
+    NativeLog::LogInformation(Util::FormatString("Loading managed assembly from path: %s", managedLibraryPath.c_str()));
 
     // Actually load the library and get the entry function
     EntryDelegate entry = NULL;
