@@ -1,7 +1,4 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
-name: .NET
+name: Build Whole Project
 
 on:
   push:
@@ -20,6 +17,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
     - name: Setup MSVC++
       uses: ilammy/msvc-dev-cmd@v1.12.1
     - name: Setup .NET
@@ -30,3 +29,10 @@ jobs:
       run: dotnet restore /p:Configuration=${{matrix.configuration}} /p:Platform=x86
     - name: Build
       run: msbuild /p:Configuration=${{matrix.configuration}} /p:Platform=x86
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: NoitaNET
+        path: |
+          x86/${{matrix.configuration}}/
+          NoitaNET.API/bin/${{matrix.configuration}}/net7.0/
