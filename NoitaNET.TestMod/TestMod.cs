@@ -6,7 +6,8 @@ namespace NoitaNET.TestMod;
 [ModEntry]
 public class TestMod : Mod
 {
-    public TestMod(string name, string description) : base(name, description)
+    public TestMod(string name, string description)
+        : base(name, description)
     {
         Logger.Instance.LogInformation($"Hello from {name}");
     }

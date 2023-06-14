@@ -7,8 +7,21 @@ namespace NoitaNET.Loader;
 
 internal class ModLoadHandler
 {
+    // Globally Available
+    /// <summary>
+    /// List of currently loaded mods
+    /// </summary>
+    public static IReadOnlyList<Mod> Mods = new List<Mod>();
+
+    /// <summary>
+    /// List of mods to load, containing their name, description, and path to their C# entry assembly
+    /// </summary>
     private readonly List<ModDescription> ModsToLoad;
 
+    /// <summary>
+    /// Working list of mods currently loaded.
+    /// We keep this private and then set the public <see cref="Mods"/> equal to it after we finish loading mods
+    /// </summary>
     private readonly List<Mod> LoadedMods = new List<Mod>(10);
 
     public ModLoadHandler(List<ModDescription> modsToLoad)
@@ -67,8 +80,13 @@ internal class ModLoadHandler
 
             CreateEntryMod(entryModType, mod);
         }
+
+        Mods = LoadedMods;
     }
 
+    /// <summary>
+    /// Finds the entry point class that inherits from <see cref="Mod"/> and is annotated with a <see cref="ModEntryAttribute"/>
+    /// </summary>
     private static Type? FindValidEntryModType(ModDescription mod, Assembly assembly)
     {
         Type[] types = assembly.GetExportedTypes();
@@ -100,6 +118,9 @@ internal class ModLoadHandler
         return entryModType;
     }
 
+    /// <summary>
+    /// Creates the instance and adds it to <see cref="LoadedMods"/>
+    /// </summary>
     private void CreateEntryMod(Type entryModType, ModDescription modDescription)
     {
         Mod entryMod = (Mod)(Activator.CreateInstance(entryModType, modDescription.Name, modDescription.Description)!);

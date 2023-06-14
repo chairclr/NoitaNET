@@ -46,6 +46,3 @@ end
 function OnWorldPreUpdate()
     callbackTable.OnWorldPreUpdate()
 end
-
--- OnWorldPostUpdate = callbackTable.OnWorldPostUpdate
--- OnWorldPreUpdate = callbackTable.OnWorldPreUpdate
