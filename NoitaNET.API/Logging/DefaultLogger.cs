@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
-using NoitaNET.Loader.Services;
+using NoitaNET.API.Services;
 
-namespace NoitaNET.Loader.Logging;
+namespace NoitaNET.API.Logging;
 
 internal class DefaultLogger : Logger
 {

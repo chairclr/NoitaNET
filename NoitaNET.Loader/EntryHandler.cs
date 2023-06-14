@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using NoitaNET.API;
 using NoitaNET.Loader.Services;
 
 namespace NoitaNET.Loader;

@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
 using NoitaNET.API;
-using NoitaNET.Loader.Logging;
+using NoitaNET.API.Logging;
 
 namespace NoitaNET.Loader;
 

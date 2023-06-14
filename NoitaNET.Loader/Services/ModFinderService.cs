@@ -1,6 +1,7 @@
 ﻿using System.Xml;
-using NoitaNET.Loader.Logging;
+using NoitaNET.API.Logging;
 using NoitaNET.Loader.Utility;
+using NoitaNET.API.Services;
 
 namespace NoitaNET.Loader.Services;
 

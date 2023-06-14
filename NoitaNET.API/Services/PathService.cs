@@ -1,8 +1,8 @@
-﻿namespace NoitaNET.Loader.Services;
+﻿namespace NoitaNET.API.Services;
 
 public class PathService
 {
-    public static readonly string WorkingDirectory = Path.GetDirectoryName(typeof(EntryHandler).Assembly.Location!)!;
+    public static readonly string WorkingDirectory = Path.GetDirectoryName(typeof(Mod).Assembly.Location!)!;
 
     public static string LogsDirectory => Path.Combine(WorkingDirectory, "Logs");
 

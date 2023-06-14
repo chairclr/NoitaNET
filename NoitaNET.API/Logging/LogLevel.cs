@@ -1,4 +1,4 @@
-﻿namespace NoitaNET.Loader.Logging;
+﻿namespace NoitaNET.API.Logging;
 
 public enum LogLevel
 {

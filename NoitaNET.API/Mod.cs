@@ -10,5 +10,5 @@
 /// </remarks>
 public abstract class Mod
 {
-    
+
 }
