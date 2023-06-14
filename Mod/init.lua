@@ -20,7 +20,3 @@ local modCount = #modIds;
 local modFolders = ffi.new("const char*[?]", modCount, modIds);
 
 lib.RegisterActiveMods(modFolders, modCount);
-
-function OnModInit() 
-    
-end
