@@ -18,8 +18,6 @@ void Entry::InternalLoad(HMODULE hMod)
     // Store the module handle for possible? later use in unloading or something like that
     ModuleHandle = hMod;
 
-    
-
     // Get the path of the currently module
     char dllPath[MAX_PATH];
     GetModuleFileName(ModuleHandle, dllPath, sizeof(dllPath));
@@ -36,7 +34,7 @@ void Entry::InternalLoad(HMODULE hMod)
     NativeLog::Init();
 
     NativeLog::LogInformation(Util::FormatString("Set root directory: %s", DllRootDirectory.c_str()));
-
+    
     for (auto& modFolder : ActiveNoitaMods)
     {
         NativeLog::LogInformation(Util::FormatString("Loaded Mod ID: %s", modFolder.c_str()));

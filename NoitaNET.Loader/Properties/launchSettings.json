@@ -3,7 +3,7 @@
     "NoitaNET.Loader": {
       "commandName": "Project",
       "nativeDebugging": true,
-      "hotReloadEnabled": false
+      "hotReloadEnabled": true
     }
   }
 }

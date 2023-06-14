@@ -10,5 +10,18 @@
 /// </remarks>
 public abstract class Mod
 {
+    public readonly string Name;
 
+    public readonly string Description;
+
+    public Mod(string name, string description)
+    {
+        Name = name;
+
+        Description = description;
+    }
+
+    public virtual void OnWorldPreUpdate() { }
+
+    public virtual void OnWorldPostUpdate() { }
 }

@@ -1,13 +1,18 @@
 ﻿using NoitaNET.API;
+using NoitaNET.API.Logging;
 
 namespace NoitaNET.TestMod;
 
 [ModEntry]
 public class TestMod : Mod
 {
-    public TestMod()
+    public TestMod(string name, string description) : base(name, description)
     {
-        Console.ForegroundColor = ConsoleColor.Gray;
-        Console.WriteLine("Hello from TestMod");
+        Logger.Instance.LogInformation($"Hello from {name}");
+    }
+
+    public override void OnWorldPostUpdate()
+    {
+        Logger.Instance.LogInformation($"TestMod::OnWorldPostUpdate was called!!");
     }
 }

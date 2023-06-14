@@ -46,21 +46,20 @@
   <ImportGroup>
     <!-- Import $(NetHostDir) macro -->
     <Import Project="NetHostDir-$(PlatformTarget).targets" />
-
     <!-- Copy lua mod files to output directory -->
     <Import Project="ModBuild.targets" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ExternalIncludePath>$(NetHostDir);$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
-    <LibraryPath>$(NetHostDir);$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>$(NetHostDir);$(ProjectDir)lua\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</ExternalIncludePath>
+    <LibraryPath>$(NetHostDir);$(ProjectDir)lua\lib;$(LibraryPath)</LibraryPath>
     <LinkIncremental />
     <OutDir>$(SolutionDir)$(PlatformTarget)\$(Configuration)\</OutDir>
     <TargetPath>$(OutDir)$(TargetName)$(TargetExt)</TargetPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ExternalIncludePath>$(NetHostDir);$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
-    <LibraryPath>$(NetHostDir);$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>$(NetHostDir);$(ProjectDir)lua\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</ExternalIncludePath>
+    <LibraryPath>$(NetHostDir);$(ProjectDir)lua\lib;$(LibraryPath)</LibraryPath>
     <LinkIncremental />
     <OutDir>$(SolutionDir)$(PlatformTarget)\$(Configuration)\</OutDir>
     <TargetPath>$(OutDir)$(TargetName)$(TargetExt)</TargetPath>
@@ -80,7 +79,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>nethost.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>nethost.lib;lua51.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>nethost.dll</DelayLoadDLLs>
       <ForceSymbolReferences>
       </ForceSymbolReferences>
@@ -105,7 +104,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>nethost.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>nethost.lib;lua51.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>nethost.dll</DelayLoadDLLs>
       <ForceSymbolReferences>
       </ForceSymbolReferences>

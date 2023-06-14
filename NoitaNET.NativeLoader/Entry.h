@@ -5,6 +5,7 @@
 #include "Util.h"
 #include "DotNetHost.h"
 #include "NativeLog.h"
+#include <lua.hpp>
 
 class Entry
 {

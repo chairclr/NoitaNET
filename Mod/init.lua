@@ -8,11 +8,12 @@ void RegisterActiveMods(const char**, int);
 
 ]])
 
-local dll_path = "mods/NoitaNET/NoitaNET.NativeLoader.dll"
+-- NoitaNET.NativeLoader
+local nativeLoaderDllPath = "mods/NoitaNET/NoitaNET.NativeLoader.dll"
 
-assert(ffi.C.LoadLibraryA(dll_path) ~= nil)
+assert(ffi.C.LoadLibraryA(nativeLoaderDllPath) ~= nil)
 
-local lib = ffi.load(dll_path)
+local lib = ffi.load(nativeLoaderDllPath)
 
 local modIds = ModGetActiveModIDs()
 local modCount = #modIds;
@@ -20,3 +21,7 @@ local modCount = #modIds;
 local modFolders = ffi.new("const char*[?]", modCount, modIds);
 
 lib.RegisterActiveMods(modFolders, modCount);
+
+function OnWorldPostUpdate()
+    
+end

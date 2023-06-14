@@ -65,7 +65,7 @@ internal class ModLoadHandler
                 continue;
             }
 
-            CreateEntryMod(entryModType);
+            CreateEntryMod(entryModType, mod);
         }
     }
 
@@ -100,9 +100,9 @@ internal class ModLoadHandler
         return entryModType;
     }
 
-    private void CreateEntryMod(Type entryModType)
+    private void CreateEntryMod(Type entryModType, ModDescription modDescription)
     {
-        Mod entryMod = (Mod)(Activator.CreateInstance(entryModType)!);
+        Mod entryMod = (Mod)(Activator.CreateInstance(entryModType, modDescription.Name, modDescription.Description)!);
 
         LoadedMods.Add(entryMod);
 
