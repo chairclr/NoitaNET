@@ -6,6 +6,8 @@ void* LoadLibraryA(const char*);
 
 void RegisterActiveMods(const char**, int);
 
+void WaitForDotnetInit();
+
 ]])
 
 -- NoitaNET.NativeLoader
@@ -21,6 +23,8 @@ local modCount = #modIds;
 local modFolders = ffi.new("const char*[?]", modCount, modIds);
 
 lib.RegisterActiveMods(modFolders, modCount);
+
+lib.WaitForDotnetInit();
 
 function OnWorldPostUpdate()
     
