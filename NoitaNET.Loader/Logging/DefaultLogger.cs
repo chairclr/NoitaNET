@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 using NoitaNET.Loader.Services;
 
 namespace NoitaNET.Loader.Logging;
@@ -23,6 +18,7 @@ internal class DefaultLogger : Logger
 
         string logFilePath = Path.Combine(PathService.LogsDirectory, $"NoitaNET.Loader-{DateTime.UtcNow:yyyy-MM-dd_HH-mm-ss}.txt");
 
+        // Just give up at this point
         if (File.Exists(logFilePath))
         {
             return;
@@ -73,6 +69,8 @@ internal class DefaultLogger : Logger
                 break;
         }
 
+        // We want all of the log messages to be aligned
+        // Longest length is "Information" at 11 characters long
         string formatted = $"[{logLevel}] {new string(' ', 11 - logLevel.ToString().Length)}{message}";
 
         Console.WriteLine(formatted);

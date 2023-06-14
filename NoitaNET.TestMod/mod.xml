@@ -1,0 +1,3 @@
+<Mod  name="NoitaNET.TestMod"
+      description="A mod to test the NoitaNET API"
+      noitanet_assembly_path="NoitaNET.TestMod.dll" />

@@ -11,7 +11,7 @@
 #include <comdef.h>
 
 // Should have the same definition as the delegate specified when loading the assembly
-typedef void (CORECLR_DELEGATE_CALLTYPE* EntryDelegate)();
+typedef void (CORECLR_DELEGATE_CALLTYPE* EntryDelegate)(const char** activeMods, int activeModsCount);
 
 class DotNetHost
 {

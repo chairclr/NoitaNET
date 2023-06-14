@@ -76,7 +76,18 @@ bool DotNetHost::LoadAndStartManagedAssembly()
 
     NativeLog::LogInformation(Util::FormatString("Got Entry function pointer: %p", entry));
 
-    entry();
+    const std::vector<std::string> activeMods = Entry::GetActiveNoitaMods();
+
+    const char** cActiveMods = new const char*[activeMods.size() + 1];
+
+    // Populate the charArray with C-style strings
+    for (size_t i = 0; i < activeMods.size(); ++i) {
+        cActiveMods[i] = activeMods[i].c_str();
+    }
+
+    entry(cActiveMods, activeMods.size());
+
+    delete[] cActiveMods;
 
     return true;
 }

@@ -1,13 +1,27 @@
-﻿using NoitaNET.Loader.Logging;
+﻿using System.Runtime.InteropServices;
+using NoitaNET.Loader.Services;
 
 namespace NoitaNET.Loader;
 
-public class Loader
+public unsafe class Loader
 {
-    public delegate void EntryDelegate();
+    public delegate void EntryDelegate(char** activeMods, int activeModsCount);
 
-    public static void Entry()
+    /// <summary>
+    /// Entry point function for the entire NoitaNET managed side
+    /// </summary>
+    public static void Entry(char** activeMods, int activeModsCount)
     {
-        Logger.Instance.LogInformation("Successfully loaded NoitaNET.Loader");
+        string[] managedActiveMods = new string[activeModsCount];
+
+        // We can't directly pass a string[] from C++ to C#, so we must pass a char** and then retrieve the strings in C#
+        for (int i = 0; i < managedActiveMods.Length; i++)
+        {
+            // TODO: Confirm that UTF8 is the right encoding when using "Multi-Byte Character Set"
+            // Or switch to unicode lol
+            managedActiveMods[i] = Marshal.PtrToStringUTF8((nint)activeMods[i])!;
+        }
+
+        List<Mod> mods = ModFinderService.FindMods(managedActiveMods);
     }
 }

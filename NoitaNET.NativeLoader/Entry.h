@@ -27,4 +27,6 @@ public:
     static bool IsDotNetLoaded();
 
     static void SetActiveNoitaMods(const char** modFolders, int modCount);
+
+    static const std::vector<std::string> GetActiveNoitaMods();
 };

@@ -64,3 +64,8 @@ void Entry::SetActiveNoitaMods(const char** modFolders, int modCount)
 {
     ActiveNoitaMods = std::vector<std::string>(modFolders, modFolders + modCount);
 }
+
+const std::vector<std::string> Entry::GetActiveNoitaMods()
+{
+    return ActiveNoitaMods;
+}

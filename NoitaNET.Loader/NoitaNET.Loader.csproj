@@ -12,6 +12,7 @@
     <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
     <OutputPath>../$(PlatformTarget)/$(Configuration)/NoitaNET.Loader</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
 </Project>
