@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 using NoitaNET.API.Logging;
 using NoitaNET.Loader.Services;
 
@@ -6,19 +7,6 @@ namespace NoitaNET.Loader;
 
 public unsafe class EntryHandler
 {
-    public struct NativeCallbacks
-    {
-        public delegate* unmanaged[Cdecl]<void> OnWorldPostUpdate;
-
-        public delegate* unmanaged[Cdecl]<void> OnWorldPreUpdate;
-
-        public delegate* unmanaged[Cdecl]<void> OnModPreInit;
-
-        public delegate* unmanaged[Cdecl]<void> OnModInit;
-
-        public delegate* unmanaged[Cdecl]<void> OnModPostInit;
-    }
-
     public delegate void EntryDelegate(char** activeMods, int activeModsCount);
 
     /// <summary>
@@ -44,11 +32,24 @@ public unsafe class EntryHandler
     }
 
 
-    public delegate void GetCallbackHandlersDelegate(NativeCallbacks* outCallbacks);
-
-    public static void GetCallbackHandlers(NativeCallbacks* outCallbacks)
+    public struct NativeCallbacks
     {
-        NativeCallbacks callbacks = new NativeCallbacks
+        public delegate* unmanaged[Cdecl]<void> OnWorldPostUpdate;
+
+        public delegate* unmanaged[Cdecl]<void> OnWorldPreUpdate;
+
+        public delegate* unmanaged[Cdecl]<void> OnModPreInit;
+
+        public delegate* unmanaged[Cdecl]<void> OnModInit;
+
+        public delegate* unmanaged[Cdecl]<void> OnModPostInit;
+    }
+
+    public delegate void GetCallbackHandlersDelegate(out NativeCallbacks outCallbacks);
+
+    public static void GetCallbackHandlers(out NativeCallbacks outCallbacks)
+    {
+        outCallbacks = new NativeCallbacks
         {
             OnWorldPostUpdate = &Callbacks.OnWorldPostUpdate,
             OnWorldPreUpdate = &Callbacks.OnWorldPreUpdate,
@@ -56,22 +57,27 @@ public unsafe class EntryHandler
             OnModInit = &Callbacks.OnModInit,
             OnModPostInit = &Callbacks.OnModPostInit,
         };
-
-        *outCallbacks = callbacks;
     }
 
 
+    [StructLayout(LayoutKind.Sequential)]
     public struct EngineAPIFunction
     {
-        public char* Name;
-        public void* FunctionPointer;
+        private readonly char* InternalName;
+        public readonly string Name => Marshal.PtrToStringUTF8((nint)InternalName)!;
+
+        public nint FunctionPointer;
     }
 
-    public delegate void RegisterEngineAPIFunctionsDelegate(EngineAPIFunction* engineFunctions, int count);
+    public delegate void RegisterEngineAPIFunctionsDelegate(EngineAPIFunction* pointer, int length);
 
-    public static void RegisterEngineAPIFunctions(EngineAPIFunction* engineFunctions, int count)
+    public static void RegisterEngineAPIFunctions(EngineAPIFunction* pointer, int length)
     {
-        Logger.Instance.LogInformation($"Got {count} engine api functions. I'm going to sleep.");
-        // TODO: things
+        Span<EngineAPIFunction> engineAPIFunctions = new Span<EngineAPIFunction>(pointer, length);
+
+        for (int i = 0; i < engineAPIFunctions.Length; i++)
+        {
+            Logger.Instance.LogInformation($"{engineAPIFunctions[i].Name}: 0x{engineAPIFunctions[i].FunctionPointer:X}");
+        }
     }
 }
