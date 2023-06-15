@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Linq;
+﻿using System.Runtime.InteropServices;
 
 namespace NoitaNET.API.Lua;
 

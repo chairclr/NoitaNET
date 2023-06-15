@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using NoitaNET.Loader.Services;
 
 namespace NoitaNET.Loader;

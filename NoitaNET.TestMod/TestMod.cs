@@ -1,6 +1,5 @@
 ﻿using NoitaNET.API;
 using NoitaNET.API.Logging;
-using NoitaNET.API.Lua;
 
 namespace NoitaNET.TestMod;
 
