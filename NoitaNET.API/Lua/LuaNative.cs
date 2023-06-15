@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Security;
 
 namespace NoitaNET.API.Lua;
@@ -74,25 +75,22 @@ public unsafe partial class LuaNative
 
     public delegate void luaJIT_profile_callback(nint data, lua_State* L, int samples, int vmstate);
 
-    [LibraryImport(DllName, StringMarshalling = StringMarshalling.Utf8)]
-    [UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
-    public static partial void luaJIT_profile_start(lua_State* L, string mode, luaJIT_profile_callback cb, nint data);
+    [DllImport(DllName, CallingConvention = Convention)]
+    public static extern void luaJIT_profile_start(lua_State* L, string mode, luaJIT_profile_callback cb, nint data);
 
-    [LibraryImport(DllName)]
-    [UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
+    [LuaNativeImport]
     public static partial void luaJIT_profile_stop(lua_State* L);
 
-    [LibraryImport(DllName, EntryPoint = "luaJIT_profile_dumpstack", StringMarshalling = StringMarshalling.Utf8)]
-    [UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
-    public static partial nint _luaJIT_profile_dumpstack(lua_State* L, string fmt, int depth, ref nint len);
+    [DllImport(DllName, CallingConvention = Convention)]
+    public static extern nint _luaJIT_profile_dumpstack(lua_State* L, string fmt, int depth, ref nint len);
 
     public static string? luaJIT_profile_dumpstack(lua_State* L, string fmt, int depth, ref nint len)
     {
         return Marshal.PtrToStringAnsi(_luaJIT_profile_dumpstack(L, fmt, depth, ref len));
     }
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaJIT_version_2_1_0_beta3();
+    [LuaNativeImport]
+    public static partial void luaJIT_version_2_1_0_beta3();
 
     public const string LUA_LDIR = "!\\lua\\";
     public const string LUA_CDIR = "!\\";
@@ -167,213 +165,208 @@ public unsafe partial class LuaNative
 
     public const int LUA_MINSTACK = 20;
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern lua_State* lua_newstate(lua_Alloc f, nint ud);
+    [LuaNativeImport]
+    public static partial lua_State* lua_newstate(lua_Alloc f, nint ud);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_close(lua_State* L);
+    [LuaNativeImport]
+    public static partial void lua_close(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern lua_State* lua_newthread(lua_State* L);
+    [LuaNativeImport]
+    public static partial lua_State* lua_newthread(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern lua_CFunction lua_atpanic(lua_State* L, lua_CFunction panicf);
+    [LuaNativeImport]
+    public static partial lua_CFunction lua_atpanic(lua_State* L, lua_CFunction panicf);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_gettop(lua_State* L);
+    [LuaNativeImport]
+    public static partial int lua_gettop(lua_State* L);
 
-    public static void lua_settop(lua_State* L, int idx)
+    [LuaNativeImport]
+    public static partial void lua_settop(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial void lua_pushvalue(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial void lua_remove(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial void lua_insert(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial void lua_replace(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial int lua_checkstack(lua_State* L, int sz);
+
+    [LuaNativeImport]
+    public static partial void lua_xmove(lua_State* from, lua_State* to, int n);
+
+    [LuaNativeImport]
+    public static partial int lua_isnumber(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial int lua_isstring(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial int lua_iscfunction(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial int lua_isuserdata(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial int lua_type(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial nint lua_typename(lua_State* L, int tp);
+    public static string? Slua_typename(lua_State* L, int tp)
     {
-        LuaNative.Raw_lua_settop(L, idx);
+        return Marshal.PtrToStringAnsi(lua_typename(L, tp));
     }
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_pushvalue(lua_State* L, int idx);
+    [LuaNativeImport]
+    public static partial int lua_equal(lua_State* L, int idx1, int idx2);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_remove(lua_State* L, int idx);
+    [LuaNativeImport]
+    public static partial int lua_rawequal(lua_State* L, int idx1, int idx2);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_insert(lua_State* L, int idx);
+    [LuaNativeImport]
+    public static partial int lua_lessthan(lua_State* L, int idx1, int idx2);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_replace(lua_State* L, int idx);
+    [LuaNativeImport]
+    public static partial double lua_tonumber(lua_State* L, int idx);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_checkstack(lua_State* L, int sz);
+    [LuaNativeImport]
+    public static partial long lua_tointeger(lua_State* L, int idx);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_xmove(lua_State* from, lua_State* to, int n);
+    [LuaNativeImport]
+    public static partial int lua_toboolean(lua_State* L, int idx);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_isnumber(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_isstring(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_iscfunction(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_isuserdata(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_type(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention, EntryPoint = "lua_typename")]
-    public static extern nint _lua_typename(lua_State* L, int tp);
-    public static string? lua_typename(lua_State* L, int tp)
+    [LuaNativeImport]
+    public static partial nint lua_tolstring(lua_State* L, int idx, ref ulong len);
+    public static string? Slua_tolstring(lua_State* L, int idx, ref ulong len)
     {
-        return Marshal.PtrToStringAnsi(_lua_typename(L, tp));
+        return Marshal.PtrToStringAnsi(lua_tolstring(L, idx, ref len));
     }
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_equal(lua_State* L, int idx1, int idx2);
+    [LuaNativeImport]
+    public static partial ulong lua_objlen(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial lua_CFunction lua_tocfunction(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial nint lua_touserdata(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial lua_State* lua_tothread(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial nint lua_topointer(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial void lua_pushnil(lua_State* L);
+
+    [LuaNativeImport]
+    public static partial void lua_pushnumber(lua_State* L, double n);
+
+    [LuaNativeImport]
+    public static partial void lua_pushinteger(lua_State* L, long n);
 
     [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_rawequal(lua_State* L, int idx1, int idx2);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_lessthan(lua_State* L, int idx1, int idx2);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern double lua_tonumber(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern long lua_tointeger(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_toboolean(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention, EntryPoint = "lua_tolstring")]
-    public static extern nint _lua_tolstring(lua_State* L, int idx, ref ulong len);
-    public static string? lua_tolstring(lua_State* L, int idx, ref ulong len)
-    {
-        return Marshal.PtrToStringAnsi(_lua_tolstring(L, idx, ref len));
-    }
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern ulong lua_objlen(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern lua_CFunction lua_tocfunction(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern nint lua_touserdata(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern lua_State* lua_tothread(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern nint lua_topointer(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_pushnil(lua_State* L);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_pushnumber(lua_State* L, double n);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_pushinteger(lua_State* L, long n);
-
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
     public static extern void lua_pushlstring(lua_State* L, string s, nint len);
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
+    [DllImport(DllName, CallingConvention = Convention)]
     public static extern void lua_pushstring(lua_State* L, string s);
 
     // TODO:
-    // [DllImport(DllName, CallingConvention = Convention)]
-    // public static extern nint lua_pushvfstring(lua_State* L, string fmt, va_list argp);
+    // [LuaNativeImport]
+    // public static partial nint lua_pushvfstring(lua_State* L, string fmt, va_list argp);
 
     // TODO:
     // [DllImport(DllName, CallingConvention = Convention, EntryPoint = "lua_pushfstring")]
-    // public static extern nint _lua_pushfstring(lua_State* L, string fmt, params string[] args);
+    // public static partial nint _lua_pushfstring(lua_State* L, string fmt, params string[] args);
     // public static string? lua_pushfstring(lua_State* L, string fmt, params string[] args)
     // {
     // 	return Marshal.PtrToStringAnsi(_lua_pushfstring(L, fmt, args));
     // }
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_pushcclosure(lua_State* L, lua_CFunction fn, int n);
+    [LuaNativeImport]
+    public static partial void lua_pushcclosure(lua_State* L, nint fn, int n);
+
+    [LuaNativeImport]
+    public static partial void lua_pushboolean(lua_State* L, int b);
+
+    [LuaNativeImport]
+    public static partial void lua_pushlightuserdata(lua_State* L, nint p);
+
+    [LuaNativeImport]
+    public static partial int lua_pushthread(lua_State* L);
+
+    [LuaNativeImport]
+    public static partial void lua_gettable(lua_State* L, int idx);
 
     [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_pushcclosure(lua_State* L, nint fn, int n);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_pushboolean(lua_State* L, int b);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_pushlightuserdata(lua_State* L, nint p);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_pushthread(lua_State* L);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_gettable(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
     public static extern void lua_getfield(lua_State* L, int idx, string k);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_rawget(lua_State* L, int idx);
+    [LuaNativeImport]
+    public static partial void lua_rawget(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial void lua_rawgeti(lua_State* L, int idx, int n);
+
+    [LuaNativeImport]
+    public static partial void lua_createtable(lua_State* L, int narr, int nrec);
+
+    [LuaNativeImport]
+    public static partial nint lua_newuserdata(lua_State* L, ulong sz);
+
+    [LuaNativeImport]
+    public static partial int lua_getmetatable(lua_State* L, int objindex);
+
+    [LuaNativeImport]
+    public static partial void lua_getfenv(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial void lua_settable(lua_State* L, int idx);
 
     [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_rawgeti(lua_State* L, int idx, int n);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_createtable(lua_State* L, int narr, int nrec);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern nint lua_newuserdata(lua_State* L, ulong sz);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_getmetatable(lua_State* L, int objindex);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_getfenv(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_settable(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
     public static extern void lua_setfield(lua_State* L, int idx, string k);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_rawset(lua_State* L, int idx);
+    [LuaNativeImport]
+    public static partial void lua_rawset(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial void lua_rawseti(lua_State* L, int idx, int n);
+
+    [LuaNativeImport]
+    public static partial int lua_setmetatable(lua_State* L, int objindex);
+
+    [LuaNativeImport]
+    public static partial int lua_setfenv(lua_State* L, int idx);
+
+    [LuaNativeImport]
+    public static partial void lua_call(lua_State* L, int nargs, int nresults);
+
+    [LuaNativeImport]
+    public static partial int lua_pcall(lua_State* L, int nargs, int nresults, int errfunc);
+
+    [LuaNativeImport]
+    public static partial int lua_cpcall(lua_State* L, lua_CFunction func, nint ud);
 
     [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_rawseti(lua_State* L, int idx, int n);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_setmetatable(lua_State* L, int objindex);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_setfenv(lua_State* L, int idx);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_call(lua_State* L, int nargs, int nresults);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_pcall(lua_State* L, int nargs, int nresults, int errfunc);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_cpcall(lua_State* L, lua_CFunction func, nint ud);
-
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
     public static extern int lua_load(lua_State* L, lua_Reader reader, nint dt, string chunkname);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_dump(lua_State* L, lua_Writer writer, nint data);
+    [LuaNativeImport]
+    public static partial int lua_dump(lua_State* L, lua_Writer writer, nint data);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_yield(lua_State* L, int nresults);
+    [LuaNativeImport]
+    public static partial int lua_yield(lua_State* L, int nresults);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_resume(lua_State* L, int narg);
+    [LuaNativeImport]
+    public static partial int lua_resume(lua_State* L, int narg);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_status(lua_State* L);
+    [LuaNativeImport]
+    public static partial int lua_status(lua_State* L);
 
     public const int LUA_GCSTOP = 0;
     public const int LUA_GCRESTART = 1;
@@ -385,23 +378,23 @@ public unsafe partial class LuaNative
     public const int LUA_GCSETSTEPMUL = 7;
     public const int LUA_GCISRUNNING = 9;
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_gc(lua_State* L, int what, int data);
+    [LuaNativeImport]
+    public static partial int lua_gc(lua_State* L, int what, int data);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_error(lua_State* L);
+    [LuaNativeImport]
+    public static partial int lua_error(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_next(lua_State* L, int idx);
+    [LuaNativeImport]
+    public static partial int lua_next(lua_State* L, int idx);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_concat(lua_State* L, int n);
+    [LuaNativeImport]
+    public static partial void lua_concat(lua_State* L, int n);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern lua_Alloc lua_getallocf(lua_State* L, ref nint ud);
+    [LuaNativeImport]
+    public static partial lua_Alloc lua_getallocf(lua_State* L, ref nint ud);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_setallocf(lua_State* L, lua_Alloc f, nint ud);
+    [LuaNativeImport]
+    public static partial void lua_setallocf(lua_State* L, lua_Alloc f, nint ud);
 
     public static void lua_pop(lua_State* L, int n)
     {
@@ -421,7 +414,7 @@ public unsafe partial class LuaNative
 
     public static void lua_pushcfunction(lua_State* L, lua_CFunction f)
     {
-        lua_pushcclosure(L, f, 0);
+        lua_pushcclosure(L, Marshal.GetFunctionPointerForDelegate(f), 0);
     }
 
     public static ulong lua_strlen(lua_State* L, int i)
@@ -487,7 +480,7 @@ public unsafe partial class LuaNative
     public static string? lua_tostring(lua_State* L, int i)
     {
         ulong temp = 0; // NOP
-        return lua_tolstring(L, i, ref temp);
+        return Slua_tolstring(L, i, ref temp);
     }
 
     public static lua_State* lua_open()
@@ -505,8 +498,8 @@ public unsafe partial class LuaNative
         return lua_gc(L, LUA_GCCOUNT, 0);
     }
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_setlevel(lua_State* from, lua_State* to);
+    [LuaNativeImport]
+    public static partial void lua_setlevel(lua_State* from, lua_State* to);
 
     public const int LUA_HOOKCALL = 0;
     public const int LUA_HOOKRET = 1;
@@ -519,66 +512,66 @@ public unsafe partial class LuaNative
     public const int LUA_MASKLINE = (1 << LUA_HOOKLINE);
     public const int LUA_MASKCOUNT = (1 << LUA_HOOKCOUNT);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_getstack(lua_State* L, int level, lua_Debug ar);
+    [LuaNativeImport]
+    public static partial int lua_getstack(lua_State* L, int level, lua_Debug ar);
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
-    public static extern int lua_getinfo(lua_State* L, string what, lua_Debug ar);
+    [LuaNativeImport]
+    public static partial int lua_getinfo(lua_State* L, string what, lua_Debug ar);
 
-    [DllImport(DllName, CallingConvention = Convention, EntryPoint = "lua_getlocal", CharSet = CharSet.Ansi)]
-    public static extern nint _lua_getlocal(lua_State* L, lua_Debug ar, int n);
-    public static string? lua_getlocal(lua_State* L, lua_Debug ar, int n)
+    [LuaNativeImport]
+    public static partial nint lua_getlocal(lua_State* L, lua_Debug ar, int n);
+    public static string? Slua_getlocal(lua_State* L, lua_Debug ar, int n)
     {
-        return Marshal.PtrToStringAnsi(_lua_getlocal(L, ar, n));
+        return Marshal.PtrToStringAnsi(lua_getlocal(L, ar, n));
     }
 
-    [DllImport(DllName, CallingConvention = Convention, EntryPoint = "lua_setlocal")]
-    public static extern nint _lua_setlocal(lua_State* L, lua_Debug ar, int n);
-    public static string? lua_setlocal(lua_State* L, lua_Debug ar, int n)
+    [LuaNativeImport]
+    public static partial nint lua_setlocal(lua_State* L, lua_Debug ar, int n);
+    public static string? Slua_setlocal(lua_State* L, lua_Debug ar, int n)
     {
-        return Marshal.PtrToStringAnsi(_lua_setlocal(L, ar, n));
+        return Marshal.PtrToStringAnsi(lua_setlocal(L, ar, n));
     }
 
-    [DllImport(DllName, CallingConvention = Convention, EntryPoint = "lua_getupvalue")]
-    public static extern nint _lua_getupvalue(lua_State* L, int funcindex, int n);
-    public static string? lua_getupvalue(lua_State* L, int funcindex, int n)
+    [LuaNativeImport]
+    public static partial nint lua_getupvalue(lua_State* L, int funcindex, int n);
+    public static string? Slua_getupvalue(lua_State* L, int funcindex, int n)
     {
-        return Marshal.PtrToStringAnsi(_lua_getupvalue(L, funcindex, n));
+        return Marshal.PtrToStringAnsi(lua_getupvalue(L, funcindex, n));
     }
 
-    [DllImport(DllName, CallingConvention = Convention, EntryPoint = "lua_setupvalue")]
-    public static extern nint _lua_setupvalue(lua_State* L, int funcindex, int n);
-    public static string? lua_setupvalue(lua_State* L, int funcindex, int n)
+    [LuaNativeImport]
+    public static partial nint lua_setupvalue(lua_State* L, int funcindex, int n);
+    public static string? Slua_setupvalue(lua_State* L, int funcindex, int n)
     {
-        return Marshal.PtrToStringAnsi(_lua_setupvalue(L, funcindex, n));
+        return Marshal.PtrToStringAnsi(lua_setupvalue(L, funcindex, n));
     }
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_sethook(lua_State* L, lua_Hook func, int mask, int count);
+    [LuaNativeImport]
+    public static partial int lua_sethook(lua_State* L, lua_Hook func, int mask, int count);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern lua_Hook lua_gethook(lua_State* L);
+    [LuaNativeImport]
+    public static partial lua_Hook lua_gethook(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_gethookmask(lua_State* L);
+    [LuaNativeImport]
+    public static partial int lua_gethookmask(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_gethookcount(lua_State* L);
+    [LuaNativeImport]
+    public static partial int lua_gethookcount(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern nint lua_upvalueid(lua_State* L, int idx, int n);
+    [LuaNativeImport]
+    public static partial nint lua_upvalueid(lua_State* L, int idx, int n);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_upvaluejoin(lua_State* L, int idx1, int n1, int idx2, int n2);
+    [LuaNativeImport]
+    public static partial void lua_upvaluejoin(lua_State* L, int idx1, int n1, int idx2, int n2);
 
     [DllImport(DllName, CallingConvention = Convention)]
     public static extern int lua_loadx(lua_State* L, lua_Reader reader, nint dt, string chunkname, string? mode);
 
-    [DllImport(DllName, CallingConvention = Convention, EntryPoint = "lua_version")]
-    public static extern nint _lua_version(lua_State* L);
-    public static double lua_version(lua_State* L)
+    [LuaNativeImport]
+    public static partial nint lua_version(lua_State* L);
+    public static double Dlua_version(lua_State* L)
     {
-        nint mem = _lua_version(L);
+        nint mem = lua_version(L);
         if (mem == nint.Zero)
             return 0;
         byte[] arr = new byte[8];
@@ -587,17 +580,17 @@ public unsafe partial class LuaNative
         return BitConverter.ToDouble(arr, 0);
     }
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_copy(lua_State* L, int fromidx, int toidx);
+    [LuaNativeImport]
+    public static partial void lua_copy(lua_State* L, int fromidx, int toidx);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern double lua_tonumberx(lua_State* L, int idx, ref int isnum);
+    [LuaNativeImport]
+    public static partial double lua_tonumberx(lua_State* L, int idx, ref int isnum);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern long lua_tointegerx(lua_State* L, int idx, ref int isnum);
+    [LuaNativeImport]
+    public static partial long lua_tointegerx(lua_State* L, int idx, ref int isnum);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_isyieldable(lua_State* L);
+    [LuaNativeImport]
+    public static partial int lua_isyieldable(lua_State* L);
 
     public const int LUA_ERRFILE = LUA_ERRERR + 1;
 
@@ -607,52 +600,52 @@ public unsafe partial class LuaNative
     [DllImport(DllName, CallingConvention = Convention)]
     public static extern void luaL_register(lua_State* L, string libname, luaL_Reg l);
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
+    [DllImport(DllName, CallingConvention = Convention)]
     public static extern int luaL_getmetafield(lua_State* L, int obj, string e);
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
+    [DllImport(DllName, CallingConvention = Convention)]
     public static extern int luaL_callmeta(lua_State* L, int obj, string e);
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
+    [DllImport(DllName, CallingConvention = Convention)]
     public static extern int luaL_typerror(lua_State* L, int narg, string tname);
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
+    [DllImport(DllName, CallingConvention = Convention)]
     public static extern int luaL_argerror(lua_State* L, int numarg, string extramsg);
 
-    [DllImport(DllName, CallingConvention = Convention, EntryPoint = "luaL_checklstring")]
-    public static extern nint _luaL_checklstring(lua_State* L, int numArg, ref nint l);
-    public static string? luaL_checklstring(lua_State* L, int numArg, ref nint l)
+    [LuaNativeImport]
+    public static partial nint luaL_checklstring(lua_State* L, int numArg, ref nint l);
+    public static string? SluaL_checklstring(lua_State* L, int numArg, ref nint l)
     {
-        return Marshal.PtrToStringAnsi(_luaL_checklstring(L, numArg, ref l));
-    }
-
-    [DllImport(DllName, CallingConvention = Convention, EntryPoint = "luaL_optlstring")]
-    public static extern nint _luaL_optlstring(lua_State* L, int numArg, string def, ref nint l);
-    public static string? luaL_optlstring(lua_State* L, int numArg, string def, ref nint l)
-    {
-        return Marshal.PtrToStringAnsi(_luaL_optlstring(L, numArg, def, ref l));
+        return Marshal.PtrToStringAnsi(luaL_checklstring(L, numArg, ref l));
     }
 
     [DllImport(DllName, CallingConvention = Convention)]
-    public static extern double luaL_checknumber(lua_State* L, int numArg);
+    public static extern nint luaL_optlstring(lua_State* L, int numArg, string def, ref nint l);
+    public static string? SluaL_optlstring(lua_State* L, int numArg, string def, ref nint l)
+    {
+        return Marshal.PtrToStringAnsi(luaL_optlstring(L, numArg, def, ref l));
+    }
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern double luaL_optnumber(lua_State* L, int nArg, double def);
+    [LuaNativeImport]
+    public static partial double luaL_checknumber(lua_State* L, int numArg);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern long luaL_checkinteger(lua_State* L, int numArg);
+    [LuaNativeImport]
+    public static partial double luaL_optnumber(lua_State* L, int nArg, double def);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern long luaL_optinteger(lua_State* L, int nArg, long def);
+    [LuaNativeImport]
+    public static partial long luaL_checkinteger(lua_State* L, int numArg);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_checkstack(lua_State* L, int sz, string msg);
+    [LuaNativeImport]
+    public static partial long luaL_optinteger(lua_State* L, int nArg, long def);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_checktype(lua_State* L, int narg, int t);
+    [LuaNativeImport]
+    public static partial void luaL_checkstack(lua_State* L, int sz, string msg);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_checkany(lua_State* L, int narg);
+    [LuaNativeImport]
+    public static partial void luaL_checktype(lua_State* L, int narg, int t);
+
+    [LuaNativeImport]
+    public static partial void luaL_checkany(lua_State* L, int narg);
 
     [DllImport(DllName, CallingConvention = Convention)]
     public static extern int luaL_newmetatable(lua_State* L, string tname);
@@ -660,12 +653,12 @@ public unsafe partial class LuaNative
     [DllImport(DllName, CallingConvention = Convention)]
     public static extern nint luaL_checkudata(lua_State* L, int ud, string tname);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_where(lua_State* L, int lvl);
+    [LuaNativeImport]
+    public static partial void luaL_where(lua_State* L, int lvl);
 
     // TODO: I dont think params works
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaL_error(lua_State* L, string fmt, params string[] args);
+    //[LuaNativeImport]
+    //public static partial int luaL_error(lua_State* L, string fmt, params string[] args);
 
     [DllImport(DllName, CallingConvention = Convention)]
     public static extern int luaL_checkoption(lua_State* L, int narg, string def, string[] lst);
@@ -673,63 +666,63 @@ public unsafe partial class LuaNative
     public const int LUA_NOREF = -2;
     public const int LUA_REFNIL = -1;
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaL_ref(lua_State* L, int t);
+    [LuaNativeImport]
+    public static partial int luaL_ref(lua_State* L, int t);
+
+    [LuaNativeImport]
+    public static partial void luaL_unref(lua_State* L, int t, int _ref);
 
     [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_unref(lua_State* L, int t, int _ref);
-
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
     public static extern int luaL_loadfile(lua_State* L, string filename);
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
+    [DllImport(DllName, CallingConvention = Convention)]
     public static extern int luaL_loadbuffer(lua_State* L, string buff, nint sz, string name);
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
+    [DllImport(DllName, CallingConvention = Convention)]
     public static extern int luaL_loadstring(lua_State* L, string s);
 
+    [LuaNativeImport]
+    public static partial lua_State* luaL_newstate();
+
     [DllImport(DllName, CallingConvention = Convention)]
-    public static extern lua_State* luaL_newstate();
-
-    [DllImport(DllName, CallingConvention = Convention, EntryPoint = "luaL_gsub", CharSet = CharSet.Ansi)]
-    public static extern nint _luaL_gsub(lua_State* L, string s, string p, string r);
-    public static string? luaL_gsub(lua_State* L, string s, string p, string r)
+    public static extern nint luaL_gsub(lua_State* L, string s, string p, string r);
+    public static string? SluaL_gsub(lua_State* L, string s, string p, string r)
     {
-        return Marshal.PtrToStringAnsi(_luaL_gsub(L, s, p, r));
+        return Marshal.PtrToStringAnsi(luaL_gsub(L, s, p, r));
     }
 
-    [DllImport(DllName, CallingConvention = Convention, EntryPoint = "luaL_findtable", CharSet = CharSet.Ansi)]
-    public static extern nint _luaL_findtable(lua_State* L, int idx, string fname, int szhint);
-    public static string? luaL_findtable(lua_State* L, int idx, string fname, int szhint)
+    [DllImport(DllName, CallingConvention = Convention)]
+    public static extern nint luaL_findtable(lua_State* L, int idx, string fname, int szhint);
+    public static string? SluaL_findtable(lua_State* L, int idx, string fname, int szhint)
     {
-        return Marshal.PtrToStringAnsi(_luaL_findtable(L, idx, fname, szhint));
+        return Marshal.PtrToStringAnsi(luaL_findtable(L, idx, fname, szhint));
     }
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
+    [DllImport(DllName, CallingConvention = Convention)]
     public static extern int luaL_fileresult(lua_State* L, int stat, string fname);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaL_execresult(lua_State* L, int stat);
+    [LuaNativeImport]
+    public static partial int luaL_execresult(lua_State* L, int stat);
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
+    [DllImport(DllName, CallingConvention = Convention)]
     public static extern int luaL_loadfilex(lua_State* L, string filename, string? mode);
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
+    [DllImport(DllName, CallingConvention = Convention)]
     public static extern int luaL_loadbufferx(lua_State* L, string buff, nint sz, string name, string? mode);
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
+    [DllImport(DllName, CallingConvention = Convention)]
     public static extern void luaL_traceback(lua_State* L, lua_State* L1, string msg, int level);
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
+    [DllImport(DllName, CallingConvention = Convention)]
     public static extern void luaL_setfuncs(lua_State* L, luaL_Reg[] l, int nup);
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
+    [DllImport(DllName, CallingConvention = Convention)]
     public static extern void luaL_pushmodule(lua_State* L, string modename, int sizehint);
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
+    [DllImport(DllName, CallingConvention = Convention)]
     public static extern nint luaL_testudata(lua_State* L, int ud, string tname);
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
+    [DllImport(DllName, CallingConvention = Convention)]
     public static extern void luaL_setmetatable(lua_State* L, string tname);
 
     public static void luaL_argcheck(lua_State* L, bool cond, int numarg, string extramsg)
@@ -741,13 +734,13 @@ public unsafe partial class LuaNative
     public static string? luaL_checkstring(lua_State* L, int n)
     {
         nint temp = 0; // NOP
-        return luaL_checklstring(L, n, ref temp);
+        return SluaL_checklstring(L, n, ref temp);
     }
 
     public static string? luaL_optstring(lua_State* L, int n, string d)
     {
         nint temp = 0; // NOP
-        return luaL_optlstring(L, n, d, ref temp);
+        return SluaL_optlstring(L, n, d, ref temp);
     }
 
     public static int luaL_checkint(lua_State* L, int n)
@@ -772,7 +765,7 @@ public unsafe partial class LuaNative
 
     public static string? luaL_typename(lua_State* L, int i)
     {
-        return lua_typename(L, lua_type(L, i));
+        return Slua_typename(L, lua_type(L, i));
     }
 
     public static int luaL_dofile(lua_State* L, string fn)
@@ -832,11 +825,11 @@ public unsafe partial class LuaNative
         B.p += n;
     }
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_buffinit(lua_State* L, luaL_Buffer B);
+    [LuaNativeImport]
+    public static partial void luaL_buffinit(lua_State* L, luaL_Buffer B);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern char* luaL_prepbuffer(luaL_Buffer B);
+    [LuaNativeImport]
+    public static partial char* luaL_prepbuffer(luaL_Buffer B);
 
     [DllImport(DllName, CallingConvention = Convention)]
     public static extern void luaL_addlstring(luaL_Buffer B, string s, nint l);
@@ -844,11 +837,11 @@ public unsafe partial class LuaNative
     [DllImport(DllName, CallingConvention = Convention)]
     public static extern void luaL_addstring(luaL_Buffer B, string s);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_addvalue(luaL_Buffer B);
+    [LuaNativeImport]
+    public static partial void luaL_addvalue(luaL_Buffer B);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_pushresult(luaL_Buffer B);
+    [LuaNativeImport]
+    public static partial void luaL_pushresult(luaL_Buffer B);
 
     public const string LUA_FILEHANDLE = "FILE*";
 
@@ -864,44 +857,44 @@ public unsafe partial class LuaNative
     public const string JITLIBNAME = "jit";
     public const string FFILIBNAME = "fii";
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaopen_base(lua_State* L);
+    [LuaNativeImport]
+    public static partial int luaopen_base(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaopen_math(lua_State* L);
+    [LuaNativeImport]
+    public static partial int luaopen_math(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaopen_string(lua_State* L);
+    [LuaNativeImport]
+    public static partial int luaopen_string(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaopen_table(lua_State* L);
+    [LuaNativeImport]
+    public static partial int luaopen_table(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaopen_io(lua_State* L);
+    [LuaNativeImport]
+    public static partial int luaopen_io(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaopen_os(lua_State* L);
+    [LuaNativeImport]
+    public static partial int luaopen_os(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaopen_package(lua_State* L);
+    [LuaNativeImport]
+    public static partial int luaopen_package(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaopen_debug(lua_State* L);
+    [LuaNativeImport]
+    public static partial int luaopen_debug(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaopen_bit(lua_State* L);
+    [LuaNativeImport]
+    public static partial int luaopen_bit(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaopen_jit(lua_State* L);
+    [LuaNativeImport]
+    public static partial int luaopen_jit(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaopen_ffi(lua_State* L);
+    [LuaNativeImport]
+    public static partial int luaopen_ffi(lua_State* L);
 
     [DllImport(DllName, CallingConvention = Convention)]
     public static extern int luaopen_string_buffer(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_openlibs(lua_State* L);
+    [LuaNativeImport]
+    public static partial void luaL_openlibs(lua_State* L);
 }
 #pragma warning restore SYSLIB1054
 #pragma warning restore IDE1006

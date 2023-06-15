@@ -10,5 +10,5 @@ internal unsafe class EngineAPIFunctionTable
 
     public static nint EntityGetWithTag = 0;
 
-    public static delegate* unmanaged[Cdecl, SuppressGCTransition]<LuaNative.lua_State*, void> Random;
+    public static delegate* unmanaged[Cdecl, SuppressGCTransition]<LuaNative.lua_State*, void> Random = default;
 }

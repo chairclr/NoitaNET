@@ -50,7 +50,7 @@ public unsafe partial class Noita
     public double Random()
     {
         EngineAPIFunctionTable.Random(L);
-        double n = LuaNative.Raw_lua_tonumber(L, -1);
+        double n = LuaNative.lua_tonumber(L, -1);
         LuaNative.lua_settop(L, 0);
         return n;
     }
