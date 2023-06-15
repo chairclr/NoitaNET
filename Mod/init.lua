@@ -8,6 +8,8 @@ void RegisterActiveMods(const char**, int);
 
 void WaitForDotnetInit();
 
+void Test(int);
+
 typedef void (*FOnWorldPostUpdate)();
 typedef void (*FOnWorldPreUpdate)();
 typedef void (*FOnModPreInit)();
@@ -42,6 +44,8 @@ local modFolders = ffi.new("const char*[?]", modCount, modIds)
 lib.RegisterActiveMods(modFolders, modCount)
 
 lib.WaitForDotnetInit()
+
+-- lib.Test(tonumber(tostring(EntityKill):sub(11)))
 
 local callbackTable = lib.GetCallbacks()
 

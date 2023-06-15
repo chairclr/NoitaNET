@@ -1,9 +1,1 @@
-{
-  "profiles": {
-    "NoitaNET.API": {
-      "commandName": "Project",
-      "hotReloadEnabled": true,
-      "nativeDebugging": true
-    }
-  }
-}
+{}

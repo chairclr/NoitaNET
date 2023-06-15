@@ -1,6 +1,7 @@
 ﻿using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using NoitaNET.Loader.Hooks;
 using NoitaNET.Loader.Services;
 
 namespace NoitaNET.Loader;
@@ -9,15 +10,15 @@ public unsafe class EntryHandler
 {
     public struct NativeCallbacks
     {
-        public delegate*<void> OnWorldPostUpdate;
+        public delegate* unmanaged[Cdecl]<void> OnWorldPostUpdate;
 
-        public delegate*<void> OnWorldPreUpdate;
+        public delegate* unmanaged[Cdecl]<void> OnWorldPreUpdate;
 
-        public delegate*<void> OnModPreInit;
+        public delegate* unmanaged[Cdecl]<void> OnModPreInit;
 
-        public delegate*<void> OnModInit;
+        public delegate* unmanaged[Cdecl]<void> OnModInit;
 
-        public delegate*<void> OnModPostInit;
+        public delegate* unmanaged[Cdecl]<void> OnModPostInit;
     }
 
     public delegate void EntryDelegate(char** activeMods, int activeModsCount);
@@ -36,6 +37,8 @@ public unsafe class EntryHandler
             // Or switch to unicode lol
             managedActiveMods[i] = Marshal.PtrToStringUTF8((nint)activeMods[i])!;
         }
+
+        LuaHooks.Register();
 
         List<ModDescription> mods = ModFinderService.FindMods(managedActiveMods);
 

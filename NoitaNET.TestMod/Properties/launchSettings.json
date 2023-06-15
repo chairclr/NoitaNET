@@ -1,8 +1,1 @@
-{
-  "profiles": {
-    "NoitaNET.TestMod": {
-      "commandName": "Project",
-      "nativeDebugging": true
-    }
-  }
-}
+{}

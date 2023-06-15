@@ -1,9 +1,1 @@
-{
-  "profiles": {
-    "NoitaNET.Loader": {
-      "commandName": "Project",
-      "nativeDebugging": true,
-      "hotReloadEnabled": true
-    }
-  }
-}
+{}

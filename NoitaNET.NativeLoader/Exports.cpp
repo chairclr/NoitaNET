@@ -17,3 +17,9 @@ NOITANET_LUA_EXPORT Callbacks GetCallbacks()
 {
     return DotNetHost::GetCallbacks();
 }
+
+NOITANET_LUA_EXPORT void Test(int lf_i)
+{
+    void* f = *(void**)(lf_i + 20);
+    NativeLog::LogInformation(Util::FormatString("Test: %p", f));
+}
