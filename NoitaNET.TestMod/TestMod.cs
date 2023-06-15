@@ -7,9 +7,6 @@ namespace NoitaNET.TestMod;
 [ModEntry]
 public class TestMod : Mod
 {
-    private int FC = 0;
-    private int Count = 60 * 10;
-
     public TestMod(string name, string description)
         : base(name, description)
     {
