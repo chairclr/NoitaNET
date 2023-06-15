@@ -20,7 +20,8 @@ NOITANET_LUA_EXPORT Callbacks GetCallbacks()
 
 NOITANET_LUA_EXPORT void RegisterEngineAPIFunction(const char* name, int lf_i)
 {
+    // https://github.com/LuaJIT/LuaJIT/blob/ff6c496ba1b51ed360065cbc5259f62becd70daa/src/lj_obj.h#L458
     void* func = *(void**)(lf_i + 20);
 
-    NativeLog::LogInformation(Util::FormatString("%s: %p", name, func));
+    Entry::AddEngineAPIFunction(name, func);
 }

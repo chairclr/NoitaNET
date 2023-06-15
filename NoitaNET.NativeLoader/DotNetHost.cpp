@@ -76,6 +76,7 @@ bool DotNetHost::LoadAndStartManagedAssembly()
 
     NativeLog::LogInformation(Util::FormatString("Got Entry function pointer: %p", entry));
 
+
     GetCallbackHandlersDelegate getCallbackHandlers = NULL;
     rc = LoadAssemblyAndGetFunctionPointer(
         Util::StringToWide(managedLibraryPath).c_str(),
@@ -84,20 +85,40 @@ bool DotNetHost::LoadAndStartManagedAssembly()
         // Function to get pointer of inside of the specified type
         L"GetCallbackHandlers",
         // Delegate that defines the signature of the entry function
-        // This is not required, but it can be useful later when we want to pass parameters or something to the entry function
         L"NoitaNET.Loader.EntryHandler+GetCallbackHandlersDelegate, NoitaNET.Loader",
         NULL,
         (void**)&getCallbackHandlers);
 
     if (rc != 0)
     {
-        NativeLog::LogError(Util::FormatString("Failed to get Entry GetCallbackHandlers pointer: %s", _com_error((HRESULT)rc).ErrorMessage()));
+        NativeLog::LogError(Util::FormatString("Failed to get GetCallbackHandlers pointer: %s", _com_error((HRESULT)rc).ErrorMessage()));
         return false;
     }
 
     NativeLog::LogInformation(Util::FormatString("Got GetCallbackHandlers function pointer: %p", getCallbackHandlers));
 
-    const std::vector<std::string> activeMods = Entry::GetActiveNoitaMods();
+
+    RegisterEngineAPIFunctionsDelegate registerEngineAPIFunctions = NULL;
+    rc = LoadAssemblyAndGetFunctionPointer(
+        Util::StringToWide(managedLibraryPath).c_str(),
+        // Specify the fully qualified type name and assembly
+        L"NoitaNET.Loader.EntryHandler, NoitaNET.Loader",
+        // Function to get pointer of inside of the specified type
+        L"RegisterEngineAPIFunctions",
+        // Delegate that defines the signature of the entry function
+        L"NoitaNET.Loader.EntryHandler+RegisterEngineAPIFunctionsDelegate, NoitaNET.Loader",
+        NULL,
+        (void**)&registerEngineAPIFunctions);
+
+    if (rc != 0)
+    {
+        NativeLog::LogError(Util::FormatString("Failed to get RegisterEngineAPIFunctions pointer: %s", _com_error((HRESULT)rc).ErrorMessage()));
+        return false;
+    }
+
+    NativeLog::LogInformation(Util::FormatString("Got RegisterEngineAPIFunctions function pointer: %p", getCallbackHandlers));
+
+    const std::vector<std::string>& activeMods = Entry::GetActiveNoitaMods();
 
     const char** cActiveMods = new const char*[activeMods.size() + 1];
 
@@ -109,6 +130,10 @@ bool DotNetHost::LoadAndStartManagedAssembly()
     entry(cActiveMods, activeMods.size());
 
     delete[] cActiveMods;
+
+    const std::vector<EngineAPIFunction>& engineAPIFunctions = Entry::GetEngineAPIFunctions();
+
+    registerEngineAPIFunctions(engineAPIFunctions.data(), engineAPIFunctions.size());
 
     getCallbackHandlers(&StoredCallbacks);
 

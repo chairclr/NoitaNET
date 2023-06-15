@@ -7,6 +7,7 @@
 #include "NativeLog.h"
 #include <lua.hpp>
 #include <MinHook.h>
+#include "EngineAPIFunction.h"
 
 class Entry
 {
@@ -21,6 +22,8 @@ private:
 
     static inline std::vector<std::string> ActiveNoitaMods = {};
 
+    static inline std::vector<EngineAPIFunction> EngineFunctions = {};
+
 public:
     static void Load(HMODULE hMod);
 
@@ -30,5 +33,9 @@ public:
 
     static void SetActiveNoitaMods(const char** modFolders, int modCount);
 
-    static const std::vector<std::string> GetActiveNoitaMods();
+    static const std::vector<std::string>& GetActiveNoitaMods();
+
+    static void AddEngineAPIFunction(const char* name, void* functionPointer);
+
+    static const std::vector<EngineAPIFunction>& GetEngineAPIFunctions();
 };

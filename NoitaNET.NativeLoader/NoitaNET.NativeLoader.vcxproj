@@ -114,6 +114,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Callbacks.h" />
+    <ClInclude Include="EngineAPIFunction.h" />
     <ClInclude Include="Exports.h" />
     <ClInclude Include="DotNetHost.h" />
     <ClInclude Include="framework.h" />

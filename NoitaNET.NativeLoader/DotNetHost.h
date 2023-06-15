@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "Entry.h"
 #include "Callbacks.h"
+#include "EngineAPIFunction.h"
 
 #include <map>
 
@@ -16,7 +17,9 @@
 // Should have the same definition as the delegate specified when loading the assembly
 typedef void (CORECLR_DELEGATE_CALLTYPE* EntryDelegate)(const char** activeMods, int activeModsCount);
 
-typedef void (CORECLR_DELEGATE_CALLTYPE* GetCallbackHandlersDelegate)(Callbacks* outCallbacks);
+typedef void (CORECLR_DELEGATE_CALLTYPE* GetCallbackHandlersDelegate)(const Callbacks* outCallbacks);
+
+typedef void (CORECLR_DELEGATE_CALLTYPE* RegisterEngineAPIFunctionsDelegate)(const EngineAPIFunction* engineFunctions, int count);
 
 class DotNetHost
 {

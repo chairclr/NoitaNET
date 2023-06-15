@@ -11,7 +11,12 @@ public unsafe class Noita
         LuaState = LuaNative.luaL_newstate();
     }
 
-    public void KillEntity(int id)
+    public List<int> EntityGetWithTag(string tag)
+    {
+        return new List<int>();
+    }
+
+    public void EntityKill(int id)
     {
 
     }

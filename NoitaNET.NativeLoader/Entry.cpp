@@ -78,7 +78,17 @@ void Entry::SetActiveNoitaMods(const char** modFolders, int modCount)
     ActiveNoitaMods = std::vector<std::string>(modFolders, modFolders + modCount);
 }
 
-const std::vector<std::string> Entry::GetActiveNoitaMods()
+const std::vector<std::string>& Entry::GetActiveNoitaMods()
 {
     return ActiveNoitaMods;
+}
+
+void Entry::AddEngineAPIFunction(const char* name, void* functionPointer)
+{
+    EngineFunctions.push_back({ name, functionPointer });
+}
+
+const std::vector<EngineAPIFunction>& Entry::GetEngineAPIFunctions()
+{
+    return EngineFunctions;
 }

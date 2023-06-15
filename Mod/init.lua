@@ -43,8 +43,6 @@ local modFolders = ffi.new("const char*[?]", modCount, modIds)
 
 lib.RegisterActiveMods(modFolders, modCount)
 
-lib.WaitForDotnetInit()
-
 lib.RegisterEngineAPIFunction("EntityLoad", tonumber(tostring(EntityLoad):sub(11)))
 lib.RegisterEngineAPIFunction("EntityLoadEndGameItem", tonumber(tostring(EntityLoadEndGameItem):sub(11)))
 lib.RegisterEngineAPIFunction("EntityLoadCameraBound", tonumber(tostring(EntityLoadCameraBound):sub(11)))
@@ -380,6 +378,8 @@ lib.RegisterEngineAPIFunction("SetValueInteger", tonumber(tostring(SetValueInteg
 lib.RegisterEngineAPIFunction("GetValueInteger", tonumber(tostring(GetValueInteger):sub(11)))
 lib.RegisterEngineAPIFunction("SetValueBool", tonumber(tostring(SetValueBool):sub(11)))
 lib.RegisterEngineAPIFunction("GetValueBool", tonumber(tostring(GetValueBool):sub(11)))
+
+lib.WaitForDotnetInit()
 
 local callbackTable = lib.GetCallbacks()
 

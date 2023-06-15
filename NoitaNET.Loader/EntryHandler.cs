@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using NoitaNET.API.Logging;
 using NoitaNET.Loader.Services;
 
 namespace NoitaNET.Loader;
@@ -42,6 +43,7 @@ public unsafe class EntryHandler
         modLoadHandler.LoadMods();
     }
 
+
     public delegate void GetCallbackHandlersDelegate(NativeCallbacks* outCallbacks);
 
     public static void GetCallbackHandlers(NativeCallbacks* outCallbacks)
@@ -56,5 +58,20 @@ public unsafe class EntryHandler
         };
 
         *outCallbacks = callbacks;
+    }
+
+
+    public struct EngineAPIFunction
+    {
+        public char* Name;
+        public void* FunctionPointer;
+    }
+
+    public delegate void RegisterEngineAPIFunctionsDelegate(EngineAPIFunction* engineFunctions, int count);
+
+    public static void RegisterEngineAPIFunctions(EngineAPIFunction* engineFunctions, int count)
+    {
+        Logger.Instance.LogInformation($"Got {count} engine api functions. I'm going to sleep.");
+        // TODO: things
     }
 }

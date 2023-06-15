@@ -75,6 +75,9 @@
     <ClInclude Include="MinHook\src\trampoline.h">
       <Filter>MinHook</Filter>
     </ClInclude>
+    <ClInclude Include="EngineAPIFunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
