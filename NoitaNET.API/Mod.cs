@@ -16,12 +16,6 @@ public abstract unsafe class Mod
 
     public readonly string Description;
 
-    private LuaNative.lua_State* UnsafeState;
-
-    public bool LuaStateAvailable { get; internal set; }
-
-    public LuaNative.lua_State* LuaState => LuaStateAvailable ? UnsafeState : null;
-
     public Mod(string name, string description)
     {
         Name = name;
@@ -38,18 +32,4 @@ public abstract unsafe class Mod
     public virtual void OnModInit() { }
 
     public virtual void OnModPostInit() { }
-
-    public void EnableLuaState(LuaNative.lua_State* luaState)
-    {
-        if (luaState != null)
-        {
-            LuaStateAvailable = true;
-            UnsafeState = luaState;
-        }
-    }
-
-    public void DisableLuaState()
-    {
-        LuaStateAvailable = false;
-    }
 }

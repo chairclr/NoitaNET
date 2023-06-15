@@ -9,8 +9,6 @@ public static unsafe class Callbacks
 {
     private static IReadOnlyList<Mod> Mods => ModLoadHandler.Mods;
 
-    internal static LuaNative.lua_State* CurrentUnsafeLuaState;
-
     [UnmanagedCallersOnly(CallConvs = new Type[] { typeof(CallConvCdecl) })]
     public static void OnWorldPreUpdate()
     {
@@ -27,9 +25,7 @@ public static unsafe class Callbacks
         for (int i = 0; i < Mods.Count; i++)
         {
             Mod mod = Mods[i];
-            mod.EnableLuaState(CurrentUnsafeLuaState);
             mod.OnWorldPostUpdate();
-            mod.DisableLuaState();
         }
     }
 
@@ -39,9 +35,7 @@ public static unsafe class Callbacks
         for (int i = 0; i < Mods.Count; i++)
         {
             Mod mod = Mods[i];
-            mod.EnableLuaState(CurrentUnsafeLuaState);
             mod.OnModPreInit();
-            mod.DisableLuaState();
         }
     }
 
@@ -51,9 +45,7 @@ public static unsafe class Callbacks
         for (int i = 0; i < Mods.Count; i++)
         {
             Mod mod = Mods[i];
-            mod.EnableLuaState(CurrentUnsafeLuaState);
             mod.OnModInit();
-            mod.DisableLuaState();
         }
     }
 
@@ -63,9 +55,7 @@ public static unsafe class Callbacks
         for (int i = 0; i < Mods.Count; i++)
         {
             Mod mod = Mods[i];
-            mod.EnableLuaState(CurrentUnsafeLuaState);
             mod.OnModPostInit();
-            mod.DisableLuaState();
         }
     }
 }

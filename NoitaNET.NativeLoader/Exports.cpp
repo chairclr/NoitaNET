@@ -18,8 +18,9 @@ NOITANET_LUA_EXPORT Callbacks GetCallbacks()
     return DotNetHost::GetCallbacks();
 }
 
-NOITANET_LUA_EXPORT void Test(int lf_i)
+NOITANET_LUA_EXPORT void RegisterEngineAPIFunction(const char* name, int lf_i)
 {
-    void* f = *(void**)(lf_i + 20);
-    NativeLog::LogInformation(Util::FormatString("Test: %p", f));
+    void* func = *(void**)(lf_i + 20);
+
+    NativeLog::LogInformation(Util::FormatString("%s: %p", name, func));
 }
