@@ -118,6 +118,10 @@ bool DotNetHost::LoadAndStartManagedAssembly()
 
     NativeLog::LogInformation(Util::FormatString("Got RegisterEngineAPIFunctions function pointer: %p", getCallbackHandlers));
 
+    const std::vector<EngineAPIFunction>& engineAPIFunctions = Entry::GetEngineAPIFunctions();
+
+    registerEngineAPIFunctions(engineAPIFunctions.data(), engineAPIFunctions.size());
+
     const std::vector<std::string>& activeMods = Entry::GetActiveNoitaMods();
 
     const char** cActiveMods = new const char*[activeMods.size() + 1];
@@ -130,10 +134,6 @@ bool DotNetHost::LoadAndStartManagedAssembly()
     entry(cActiveMods, activeMods.size());
 
     delete[] cActiveMods;
-
-    const std::vector<EngineAPIFunction>& engineAPIFunctions = Entry::GetEngineAPIFunctions();
-
-    registerEngineAPIFunctions(engineAPIFunctions.data(), engineAPIFunctions.size());
 
     getCallbackHandlers(&StoredCallbacks);
 

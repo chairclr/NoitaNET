@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Security;
 
 namespace NoitaNET.API.Lua;
 
@@ -181,8 +182,10 @@ public unsafe partial class LuaNative
     [DllImport(DllName, CallingConvention = Convention)]
     public static extern int lua_gettop(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_settop(lua_State* L, int idx);
+    public static void lua_settop(lua_State* L, int idx)
+    {
+        LuaNative.Raw_lua_settop(L, idx);
+    }
 
     [DllImport(DllName, CallingConvention = Convention)]
     public static extern void lua_pushvalue(lua_State* L, int idx);
@@ -293,6 +296,9 @@ public unsafe partial class LuaNative
 
     [DllImport(DllName, CallingConvention = Convention)]
     public static extern void lua_pushcclosure(lua_State* L, lua_CFunction fn, int n);
+
+    [DllImport(DllName, CallingConvention = Convention)]
+    public static extern void lua_pushcclosure(lua_State* L, nint fn, int n);
 
     [DllImport(DllName, CallingConvention = Convention)]
     public static extern void lua_pushboolean(lua_State* L, int b);

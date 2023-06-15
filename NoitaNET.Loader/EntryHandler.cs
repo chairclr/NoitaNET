@@ -1,6 +1,9 @@
-﻿using System.Reflection.Metadata;
+﻿using System.Reflection;
+using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
+using NoitaNET.API;
 using NoitaNET.API.Logging;
+using NoitaNET.API.Lua;
 using NoitaNET.Loader.Services;
 
 namespace NoitaNET.Loader;
@@ -75,9 +78,26 @@ public unsafe class EntryHandler
     {
         Span<EngineAPIFunction> engineAPIFunctions = new Span<EngineAPIFunction>(pointer, length);
 
+        // Map function name -> function pointer for use in assigning pointers in the function table by name
+        Dictionary<string, nint> engineAPIMap = new Dictionary<string, nint>(engineAPIFunctions.Length);
+
         for (int i = 0; i < engineAPIFunctions.Length; i++)
         {
-            Logger.Instance.LogInformation($"{engineAPIFunctions[i].Name}: 0x{engineAPIFunctions[i].FunctionPointer:X}");
+            engineAPIMap.Add(engineAPIFunctions[i].Name, engineAPIFunctions[i].FunctionPointer);
+        }
+
+        // Set the function pointers for the NoitaNET -> Noita lua API
+        // They're contained in an internal class, so we have to use reflection to get the type as well
+        FieldInfo[] fields = typeof(Noita).Assembly
+            .GetType("NoitaNET.API.EngineAPIFunctionTable")!
+            .GetFields(BindingFlags.Static | BindingFlags.Public);
+
+        for (int i = 0; i < fields.Length; i++)
+        {
+            if (engineAPIMap.TryGetValue(fields[i].Name, out nint fn))
+            {
+                fields[i].SetValue(null,  fn);
+            }
         }
     }
 }

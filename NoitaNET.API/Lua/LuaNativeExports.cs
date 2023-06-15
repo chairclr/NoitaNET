@@ -1,11 +1,15 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace NoitaNET.API.Lua;
 
-public partial class LuaNative
+public unsafe partial class LuaNative
 {
     private static nint LuaModule;
+
+    public static delegate* unmanaged[Cdecl, SuppressGCTransition]<lua_State*, int, double> Raw_lua_tonumber;
+    public static delegate* unmanaged[Cdecl, SuppressGCTransition]<lua_State*, int, void> Raw_lua_settop;
 
     static LuaNative()
     {
@@ -19,6 +23,9 @@ public partial class LuaNative
                 break;
             }
         }
+
+        Raw_lua_tonumber = (delegate* unmanaged[Cdecl, SuppressGCTransition]<lua_State*, int, double>)GetLuaExport("lua_tonumber");
+        Raw_lua_settop = (delegate* unmanaged[Cdecl, SuppressGCTransition]<lua_State*, int, void>)GetLuaExport("lua_settop");
     }
 
     [DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
