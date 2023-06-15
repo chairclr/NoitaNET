@@ -16,11 +16,15 @@ public abstract unsafe class Mod
 
     public readonly string Description;
 
+    public readonly Noita Noita;
+
     public Mod(string name, string description)
     {
         Name = name;
 
         Description = description;
+
+        Noita = new Noita();
     }
 
     public virtual void OnWorldPreUpdate() { }

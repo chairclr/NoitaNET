@@ -1,7 +1,6 @@
 ﻿using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using NoitaNET.Loader.Hooks;
 using NoitaNET.Loader.Services;
 
 namespace NoitaNET.Loader;
@@ -37,8 +36,6 @@ public unsafe class EntryHandler
             // Or switch to unicode lol
             managedActiveMods[i] = Marshal.PtrToStringUTF8((nint)activeMods[i])!;
         }
-
-        LuaHooks.Register();
 
         List<ModDescription> mods = ModFinderService.FindMods(managedActiveMods);
 
