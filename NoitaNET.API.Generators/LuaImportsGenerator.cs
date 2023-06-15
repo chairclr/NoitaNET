@@ -110,7 +110,7 @@ public class LuaImportsGenerator : IIncrementalGenerator
                 // public static delegate* unmanaged[Cdecl, SuppressGCTransition]<lua_State*, int, double> Raw_lua_tonumber = (delegate* unmanaged[Cdecl, SuppressGCTransition]<lua_State*, int, double>)GetLuaExport("lua_tonumber");
 
                 string functionPointerType = $"delegate* unmanaged[Cdecl, SuppressGCTransition]<{function.FunctionPointerSignature}>";
-                source.AppendLine($"public static {functionPointerType} __Raw_{function.FunctionName} = ({functionPointerType})GetLuaExport(\"{function.FunctionName}\");");
+                source.AppendLine($"private static {functionPointerType} __Raw_{function.FunctionName} = ({functionPointerType})GetLuaExport(\"{function.FunctionName}\");");
 
                 source.AppendLine($"public static partial {function.FunctionReturnType} {function.FunctionName}({function.FunctionParameters})");
                 source.AppendLine("{");

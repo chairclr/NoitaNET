@@ -1,4 +1,4 @@
-﻿using NoitaNET.API.Lua;
+﻿using unsafe APIFunction = delegate* unmanaged[Cdecl, SuppressGCTransition]<NoitaNET.API.Lua.LuaNative.lua_State*, void>;
 
 namespace NoitaNET.API;
 
@@ -6,9 +6,9 @@ internal unsafe class EngineAPIFunctionTable
 {
     // All engine api functions are set via reflection by the loader
 
-    public static nint EntityKill = 0;
+    public static APIFunction EntityKill = default;
 
-    public static nint EntityGetWithTag = 0;
+    public static APIFunction EntityGetWithTag = default;
 
-    public static delegate* unmanaged[Cdecl, SuppressGCTransition]<LuaNative.lua_State*, void> Random = default;
+    public static APIFunction Random = default;
 }

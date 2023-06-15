@@ -16,33 +16,27 @@ public unsafe partial class Noita
 
     public void EntityKill(int id)
     {
-        LuaNative.lua_pushcclosure(L, EngineAPIFunctionTable.EntityKill, 0);
         LuaNative.lua_pushnumber(L, id);
-        LuaNative.lua_call(L, 1, 0);
+        EngineAPIFunctionTable.EntityGetWithTag(L);
         LuaNative.lua_settop(L, 0);
     }
 
-    public int[] EntityGetWithTag(string tag)
+    public long[] EntityGetWithTag(string tag)
     {
-        LuaNative.lua_pushcclosure(L, EngineAPIFunctionTable.EntityGetWithTag, 0);
         LuaNative.lua_pushstring(L, tag);
-        LuaNative.lua_call(L, 1, 1);
+        EngineAPIFunctionTable.EntityGetWithTag(L);
 
-        int length = (int)LuaNative.lua_objlen(L, 1);
+        ulong length = LuaNative.lua_objlen(L, 1);
 
-        int[] result = new int[length]; 
+        long[] result = new long[length]; 
 
-        for (int i = 0; i < length; i++)
+        for (int i = 0; (ulong)i < length; i++)
         {
-            // + 1 because lua tables are base 1 indexed (wtf?)
-            LuaNative.lua_pushinteger(L, i + 1);
-            LuaNative.lua_gettable(L, -2);
-            int value = (int)LuaNative.lua_tointeger(L, -1);
-
-            result[i] = value;
+            LuaNative.lua_rawgeti(L, -1, i);
+            result[i] = LuaNative.lua_tointeger(L, -1);
         }
 
-        LuaNative.lua_pop(L, 1);
+        LuaNative.lua_settop(L, 0);
 
         return result;
     }
