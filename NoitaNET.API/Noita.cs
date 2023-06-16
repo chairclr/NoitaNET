@@ -14,13 +14,13 @@ public unsafe partial class Noita
         L = LuaNative.luaL_newstate();
     }
 
-    //public int EntityLoad(string filename)
-    //{
-    //    LuaNative.lua_pushstring(L, filename);
-    //    EngineAPIFunctionTable.EntityLoad(L);
+    public int EntityLoad(string filename)
+    {
+        LuaNative.lua_pushstring(L, filename);
+        EngineAPIFunctionTable.EntityLoad(L);
 
-    //    return (int)LuaNative.lua_tointeger(L, -1);
-    //}
+        return (int)LuaNative.lua_tointeger(L, -1);
+    }
 
     //public int EntityLoad(string filename, Vector2 position)
     //{
