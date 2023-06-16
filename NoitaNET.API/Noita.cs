@@ -22,6 +22,20 @@ public unsafe partial class Noita
         return (int)LuaNative.lua_tointeger(L, -1);
     }
 
+    public int EntityLoad(string filename, Vector2 position)
+    {
+        LuaNative.lua_pushstring(L, filename);
+        LuaNative.lua_pushnumber(L, position.X);
+        LuaNative.lua_pushnumber(L, position.Y);
+        EngineAPIFunctionTable.EntityLoad(L);
+
+        int result = (int)LuaNative.lua_tointeger(L, -1);
+
+        LuaNative.lua_settop(L, 0);
+
+        return result;
+    }
+
     public void EntityKill(int id)
     {
         LuaNative.lua_pushnumber(L, id);

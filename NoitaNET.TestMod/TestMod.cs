@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Numerics;
 using NoitaNET.API;
 using NoitaNET.API.Logging;
 
@@ -27,6 +28,10 @@ public class TestMod : Mod
         if (UpdateCount % BenchmarkEveryNFrames == 0)
         {
             UpdateCount = 0;
+
+            //int id =  Noita.EntityLoad(@"data/entities/animals/boss_fish/fish_giga.xml", new Vector2(0, -200));
+
+            //Logger.Instance.LogInformation($"ID: {id}");
         }
     }
 
