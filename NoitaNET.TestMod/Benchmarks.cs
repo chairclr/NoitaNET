@@ -36,7 +36,7 @@ internal class Benchmarks
         long result = 1;
         for (long i = 0; i < n; i++)
         {
-            result = Noita.EntityGetWithTag("player_unit", 0);
+            result = Noita.EntityGetWithTag("player_unit")[0];
         }
         sw.Stop();
 

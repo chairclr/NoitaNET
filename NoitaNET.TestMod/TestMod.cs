@@ -27,9 +27,6 @@ public class TestMod : Mod
         if (UpdateCount % BenchmarkEveryNFrames == 0)
         {
             UpdateCount = 0;
-
-            // Benchmarks.BenchmarkPureRandomCalls(100_000_000);
-            Benchmarks.BenchmarkGetPlayerByTag(100_000_000);
         }
     }
 

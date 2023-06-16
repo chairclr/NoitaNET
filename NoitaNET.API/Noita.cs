@@ -7,11 +7,19 @@ namespace NoitaNET.API;
 
 public unsafe partial class Noita
 {
-    private LuaNative.lua_State* L;
+    private readonly LuaNative.lua_State* L;
 
     public Noita()
     {
         L = LuaNative.luaL_newstate();
+    }
+
+    public int EntityLoad(string filename)
+    {
+        LuaNative.lua_pushstring(L, filename);
+        EngineAPIFunctionTable.EntityLoad(L);
+
+        return (int)LuaNative.lua_tointeger(L, -1);
     }
 
     public void EntityKill(int id)
