@@ -275,7 +275,7 @@ public unsafe partial class LuaNative
     [DllImport(DllName, CallingConvention = Convention)]
     public static extern void lua_pushlstring(lua_State* L, string s, nint len);
 
-    [DllImport(DllName, CallingConvention = Convention)]
+    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
     public static extern void lua_pushstring(lua_State* L, string s);
 
     // TODO:
