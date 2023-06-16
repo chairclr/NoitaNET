@@ -14,13 +14,229 @@ public unsafe partial class Noita
         L = LuaNative.luaL_newstate();
     }
 
-    public int EntityLoad(string filename)
+    public void ComponentGetValue2(int component_id, string field_name, out nint? int_value)
+    {
+        LuaNative.lua_pushinteger(L, component_id);
+        LuaNative.lua_pushstring(L, field_name);
+        EngineAPIFunctionTable.ComponentGetValue2(L);
+
+        if (LuaNative.lua_isnil(L, -1) == 1)
+        {
+            int_value = null;
+        }
+        else
+        {
+            int_value = LuaNative.lua_tointeger(L, -1);
+        }
+
+        LuaNative.lua_settop(L, 0);
+    }
+
+    public void ComponentGetValue2(int component_id, string field_name, out double? number_value)
+    {
+        LuaNative.lua_pushinteger(L, component_id);
+        LuaNative.lua_pushstring(L, field_name);
+        EngineAPIFunctionTable.ComponentGetValue2(L);
+
+        if (LuaNative.lua_isnil(L, -1) == 1)
+        {
+            number_value = null;
+        }
+        else
+        {
+            number_value = LuaNative.lua_tonumber(L, -1);
+        }
+
+        LuaNative.lua_settop(L, 0);
+    }
+
+    public void ComponentGetValue2(int component_id, string field_name, out string? string_value)
+    {
+        LuaNative.lua_pushinteger(L, component_id);
+        LuaNative.lua_pushstring(L, field_name);
+        EngineAPIFunctionTable.ComponentGetValue2(L);
+
+        if (LuaNative.lua_isnil(L, -1) == 1)
+        {
+            string_value = null;
+        }
+        else
+        {
+            string_value = LuaNative.lua_tostring(L, -1);
+        }
+
+        LuaNative.lua_settop(L, 0);
+    }
+
+    public void ComponentSetValue2(int component_id, string field_name, nint int_value)
+    {
+        LuaNative.lua_pushinteger(L, component_id);
+        LuaNative.lua_pushstring(L, field_name);
+        LuaNative.lua_pushinteger(L, int_value);
+        EngineAPIFunctionTable.ComponentSetValue2(L);
+
+        LuaNative.lua_settop(L, 0);
+    }
+
+    public void ComponentSetValue2(int component_id, string field_name, double number_value)
+    {
+        LuaNative.lua_pushinteger(L, component_id);
+        LuaNative.lua_pushstring(L, field_name);
+        LuaNative.lua_pushnumber(L, number_value);
+        EngineAPIFunctionTable.ComponentSetValue2(L);
+
+        LuaNative.lua_settop(L, 0);
+    }
+
+    public void ComponentSetValue2(int component_id, string field_name, string string_value)
+    {
+        LuaNative.lua_pushinteger(L, component_id);
+        LuaNative.lua_pushstring(L, field_name);
+        LuaNative.lua_pushstring(L, string_value);
+        EngineAPIFunctionTable.ComponentSetValue2(L);
+
+        LuaNative.lua_settop(L, 0);
+    }
+
+    public void BiomeSetValue(string filename, string field_name, nint int_value)
     {
         LuaNative.lua_pushstring(L, filename);
-        EngineAPIFunctionTable.EntityLoad(L);
+        LuaNative.lua_pushstring(L, field_name);
+        LuaNative.lua_pushinteger(L, int_value);
+        EngineAPIFunctionTable.ComponentSetValue2(L);
 
-        return (int)LuaNative.lua_tointeger(L, -1);
+        LuaNative.lua_settop(L, 0);
     }
+
+    public void BiomeSetValue(string filename, string field_name, double number_value)
+    {
+        LuaNative.lua_pushstring(L, filename);
+        LuaNative.lua_pushstring(L, field_name);
+        LuaNative.lua_pushnumber(L, number_value);
+        EngineAPIFunctionTable.ComponentSetValue2(L);
+
+        LuaNative.lua_settop(L, 0);
+    }
+
+    public void BiomeSetValue(string filename, string field_name, string string_value)
+    {
+        LuaNative.lua_pushstring(L, filename);
+        LuaNative.lua_pushstring(L, field_name);
+        LuaNative.lua_pushstring(L, string_value);
+        EngineAPIFunctionTable.ComponentSetValue2(L);
+
+        LuaNative.lua_settop(L, 0);
+    }
+
+    public void BiomeGetValue(string filename, string field_name, out nint? int_value)
+    {
+        LuaNative.lua_pushstring(L, filename);
+        LuaNative.lua_pushstring(L, field_name);
+        EngineAPIFunctionTable.BiomeGetValue(L);
+
+        if (LuaNative.lua_isnil(L, -1) == 1)
+        {
+            int_value = null;
+        }
+        else
+        {
+            int_value = LuaNative.lua_tointeger(L, -1);
+        }
+
+        LuaNative.lua_settop(L, 0);
+    }
+
+    public void BiomeGetValue(string filename, string field_name, out double? number_value)
+    {
+        LuaNative.lua_pushstring(L, filename);
+        LuaNative.lua_pushstring(L, field_name);
+        EngineAPIFunctionTable.BiomeGetValue(L);
+
+        if (LuaNative.lua_isnil(L, -1) == 1)
+        {
+            number_value = null;
+        }
+        else
+        {
+            number_value = LuaNative.lua_tonumber(L, -1);
+        }
+
+        LuaNative.lua_settop(L, 0);
+    }
+
+    public void BiomeGetValue(string filename, string field_name, out string? string_value)
+    {
+        LuaNative.lua_pushstring(L, filename);
+        LuaNative.lua_pushstring(L, field_name);
+        EngineAPIFunctionTable.BiomeGetValue(L);
+
+        if (LuaNative.lua_isnil(L, -1) == 1)
+        {
+            string_value = null;
+        }
+        else
+        {
+            string_value = LuaNative.lua_tostring(L, -1);
+        }
+
+        LuaNative.lua_settop(L, 0);
+    }
+
+    // TODO
+    public void ComponentObjectSetValue2()
+    {
+        throw new NotImplementedException();
+    }
+
+    // TODO
+    public void EntityAddComponent2()
+    {
+        throw new NotImplementedException();
+    }
+
+    // TODO
+    public void BiomeObjectSetValue()
+    {
+        throw new NotImplementedException();
+    }
+
+    // TODO
+    public void BiomeVegetationSetValue()
+    {
+        throw new NotImplementedException();
+    }
+
+    // TODO
+    public void BiomeMaterialSetValue()
+    {
+        throw new NotImplementedException();
+    }
+
+    // TODO
+    public void BiomeMaterialGetValue()
+    {
+        throw new NotImplementedException();
+    }
+
+    // TODO
+    public void GameCreateCosmeticParticle()
+    {
+        throw new NotImplementedException();
+    }
+
+    // TODO 
+    public void PhysicsApplyForceOnArea()
+    {
+        throw new NotImplementedException();
+    }
+
+    //public int EntityLoad(string filename)
+    //{
+    //    LuaNative.lua_pushstring(L, filename);
+    //    EngineAPIFunctionTable.EntityLoad(L);
+
+    //    return (int)LuaNative.lua_tointeger(L, -1);
+    //}
 
     //public int EntityLoad(string filename, Vector2 position)
     //{
@@ -61,7 +277,7 @@ public unsafe partial class Noita
     //    }
 
     //    LuaNative.lua_settop(L, 0);
-        
+
     //    return result;
     //}
 

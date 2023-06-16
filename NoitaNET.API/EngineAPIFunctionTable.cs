@@ -2,9 +2,17 @@
 
 namespace NoitaNET.API;
 
-internal unsafe class EngineAPIFunctionTable
+internal unsafe partial class EngineAPIFunctionTable
 {
     // All engine api functions are set via reflection by the loader
+
+    //public static APIFunction ComponentGetValue2 = default;
+
+    //public static APIFunction ComponentSetValue2 = default;
+
+    //public static APIFunction BiomeSetValue = default;
+
+    //public static APIFunction BiomeGetValue = default;
 
     //public static APIFunction EntityLoad = default;
 

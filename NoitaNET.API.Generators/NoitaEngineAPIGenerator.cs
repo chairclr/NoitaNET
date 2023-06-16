@@ -7,6 +7,7 @@ using System.Reflection.Metadata;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 
 namespace NoitaNET.API.Generators;
@@ -29,57 +30,89 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
 
         IncrementalValuesProvider<InitUnionType> manyUnion = union.SelectMany((x, _) => x.contents.Select<string, InitUnionType>(y => new InitUnionType(x.noitaSymbol, y)));
 
-        context.RegisterSourceOutput(manyUnion, (spc, unionInfo) =>
+        context.RegisterSourceOutput(manyUnion.Collect(), (spc, collectedUnionInfo) =>
         {
             StringBuilder builder = new StringBuilder();
 
-            string content = unionInfo.Content;
-
-            if (content.Contains("[") && !content.EndsWith("]"))
-            {
-                content += "]";
-            }
-
             builder.AppendLine("/// Auto-generated ///");
-
             builder.AppendLine("namespace NoitaNET.API;");
+            builder.AppendLine("#nullable enable");
             builder.AppendLine("unsafe partial class Noita");
             builder.AppendLine("{");
 
-            Match match = APIFunctionRegex.Match(content);
-            if (!match.Success)
+            List<string> functionPointersToAddToTable = new List<string>(collectedUnionInfo.Length);
+
+            foreach (InitUnionType unionInfo in collectedUnionInfo)
             {
-                return; // Invalid function documentation format
-            }
+                string content = unionInfo.Content;
 
-            string functionName = match.Groups[1].Value.Trim();
+                // Case for GameGetDateAndTimeLocal() ->year:int,month:int,day:int,hour:int,minute:int,second:int
+                content = content.Replace("->y", "-> y");
 
-            // Method has already been defined in Noita class by a human
-            if (unionInfo.NoitaSymbol.GetMembers().Any(x => x.Kind == SymbolKind.Method && x.Name == functionName))
-            {
-                return; 
-            }
+                content = content.Replace("-> x, y", "-> x:number, y:number");
 
-            string rawParameters = match.Groups[2].Value.Trim();
-            string rawReturnValues = match.Groups[3].Value.Trim();
-            string description = match.Groups[4].Value.Trim();
+                content = content.Replace("-> (x:number,y:number)|nil", "-> x:number,y:number|nil");
 
-            (List<LuaDocParameter>? parameters, List<LuaDocParameter>? overloadParameters) = GetParameters(rawParameters);
-            List<LuaDocReturnValue>? returnValues = GetReturnValues(rawReturnValues);
+                content = content.Replace("(Debugish", "[(Debugish");
 
-            builder.AppendLine($"""
+                if (content.Contains("[") && !content.EndsWith("]"))
+                {
+                    content += "]";
+                }
+
+                Match match = APIFunctionRegex.Match(content);
+                if (!match.Success)
+                {
+                    throw new Exception("Invalid function documentation format");
+                }
+
+                string functionName = match.Groups[1].Value.Trim();
+
+                functionPointersToAddToTable.Add(functionName);
+
+                // Method has already been defined in Noita class by a human
+                if (unionInfo.NoitaSymbol.GetMembers().Any(x => x.Kind == SymbolKind.Method && x.Name == functionName))
+                {
+                    continue;
+                }
+
+
+                string rawParameters = match.Groups[2].Value.Trim();
+                string rawReturnValues = match.Groups[3].Value.Trim();
+                string description = match.Groups[4].Value.Trim();
+
+                (List<LuaDocParameter>? parameters, List<LuaDocParameter>? overloadParameters) = GetParameters(rawParameters);
+                List<LuaDocReturnValue>? returnValues = GetReturnValues(rawReturnValues);
+
+                builder.AppendLine($"""
                                 /// <summary>
                                 /// {(string.IsNullOrEmpty(description) ? "No description provided" : description)}
                                 /// </summary>
                                 """);
 
-            WriteMethod(builder, functionName, parameters, overloadParameters, returnValues);
+                WriteMethod(builder, functionName, parameters, overloadParameters, returnValues);
+                builder.AppendLine();
+            }
 
             builder.AppendLine("}");
 
-            Console.WriteLine(builder.ToString());
+            spc.AddSource($"Noita.EngineAPI.g.cs", builder.ToString());
 
-            spc.AddSource($"Noita.EngineAPI.{functionName}.g.cs", builder.ToString());
+            builder.Clear();
+
+            builder.AppendLine("using unsafe APIFunction = delegate* unmanaged[Cdecl, SuppressGCTransition]<NoitaNET.API.Lua.LuaNative.lua_State*, void>;");
+            builder.AppendLine("/// Auto-generated ///");
+            builder.AppendLine("namespace NoitaNET.API;");
+            builder.AppendLine("#nullable enable");
+            builder.AppendLine("unsafe partial class EngineAPIFunctionTable");
+            builder.AppendLine("{");
+            foreach (string fname in functionPointersToAddToTable)
+            {
+                builder.AppendLine($"public static APIFunction {fname} = default;");
+            }
+            builder.AppendLine("}");
+
+            spc.AddSource($"Noita.EngineAPITable.g.cs", builder.ToString());
         });
     }
 
@@ -114,7 +147,7 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
                 else if (name == "bool rare_table = false")
                 {
                     name = "rare_table";
-                    typeAndOptionalDefault = "rare_table = false";
+                    typeAndOptionalDefault = "bool = false";
                 }
                 else if (name == "{table_of_xml_entities}")
                 {
@@ -136,7 +169,6 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
             if (defaultSplits.Length == 1)
             {
                 parsedParams.Add(new LuaDocParameter(name, typeAndOptionalDefault, GetCSharpType(typeAndOptionalDefault)));
-                parsedOverloadParams.Add(new LuaDocParameter(name, typeAndOptionalDefault, GetCSharpType(typeAndOptionalDefault)));
             }
             else if (defaultSplits.Length == 2)
             {
@@ -157,18 +189,81 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
             return null;
         }
 
-        return null;
+        List<LuaDocReturnValue> result = new List<LuaDocReturnValue>();
+
+        string[] retvals = returnValues.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (string retval in retvals.Select(x => x.Trim()))
+        {
+            // table
+            string replacedRetval = retval;
+            bool nullable = false;
+            if (retval.Contains("|nil"))
+            {
+                nullable = true;
+
+                replacedRetval = retval.Replace("|nil", "");
+            }
+
+            if (replacedRetval.StartsWith("{") && replacedRetval.EndsWith("}"))
+            {
+                string type = retval;
+
+                if (retval.Contains(":"))
+                {
+                    type = retval.Remove(1, retval.IndexOf(":"));
+                }
+
+                result.Add(new LuaDocReturnValue("return_value_table", replacedRetval, GetCSharpType(type) + (nullable ? "?" : "")));
+            }
+            // otherwise
+            else
+            {
+                string[] nameTypeSplits = replacedRetval.Split(':');
+                string name = nameTypeSplits[0].Trim();
+                string type;
+
+                if (nameTypeSplits.Length == 1)
+                {
+                    type = name;
+
+                    // For case BiomeMapGetName( x:number = camera_x, y:number = camera_y ) -> name
+                    if (type == name)
+                    {
+                        type = "string";
+                    }
+                    name = $"return_value_{type}";
+                }
+                else
+                {
+                    name = $"return_value_{name}";
+                    type = nameTypeSplits[1].Trim();
+                }
+
+                result.Add(new LuaDocReturnValue(name, type, GetCSharpType(type) + (nullable ? "?" : "")));
+            }
+        }
+
+        return result;
     }
 
     private static string GetCSharpType(string luaType)
     {
+        if (luaType.Contains("|"))
+        {
+            return luaType;
+        }
+
         switch (luaType)
         {
             case "string":
                 return "string";
             case "int":
                 return "int";
+            case "uint":
+                return "uint";
             case "number":
+            case "float":
                 return "double";
             case "bool":
                 return "bool";
@@ -178,6 +273,8 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
                 return "string[]";
             case "{string-string}":
                 return "System.Collections.Generic.Dictionary<string, string>";
+            case "obj":
+                return "NoitaNET.API.Gui.GuiUserData";
             default:
                 throw new Exception($"Unknown lua type {luaType}");
         }

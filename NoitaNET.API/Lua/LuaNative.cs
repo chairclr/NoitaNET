@@ -236,20 +236,20 @@ public unsafe partial class LuaNative
     public static partial double lua_tonumber(lua_State* L, int idx);
 
     [LuaNativeImport]
-    public static partial long lua_tointeger(lua_State* L, int idx);
+    public static partial nint lua_tointeger(lua_State* L, int idx);
 
     [LuaNativeImport]
     public static partial int lua_toboolean(lua_State* L, int idx);
 
     [LuaNativeImport]
-    public static partial nint lua_tolstring(lua_State* L, int idx, ref ulong len);
-    public static string? Slua_tolstring(lua_State* L, int idx, ref ulong len)
+    public static partial nint lua_tolstring(lua_State* L, int idx, ref nuint len);
+    public static string? Slua_tolstring(lua_State* L, int idx, ref nuint len)
     {
         return Marshal.PtrToStringAnsi(lua_tolstring(L, idx, ref len));
     }
 
     [LuaNativeImport]
-    public static partial ulong lua_objlen(lua_State* L, int idx);
+    public static partial nuint lua_objlen(lua_State* L, int idx);
 
     [LuaNativeImport]
     public static partial lua_CFunction lua_tocfunction(lua_State* L, int idx);
@@ -270,7 +270,7 @@ public unsafe partial class LuaNative
     public static partial void lua_pushnumber(lua_State* L, double n);
 
     [LuaNativeImport]
-    public static partial void lua_pushinteger(lua_State* L, long n);
+    public static partial void lua_pushinteger(lua_State* L, nint n);
 
     [DllImport(DllName, CallingConvention = Convention)]
     public static extern void lua_pushlstring(lua_State* L, string s, nint len);
@@ -318,7 +318,7 @@ public unsafe partial class LuaNative
     public static partial void lua_createtable(lua_State* L, int narr, int nrec);
 
     [LuaNativeImport]
-    public static partial nint lua_newuserdata(lua_State* L, ulong sz);
+    public static partial nint lua_newuserdata(lua_State* L, nuint sz);
 
     [LuaNativeImport]
     public static partial int lua_getmetatable(lua_State* L, int objindex);
@@ -417,7 +417,7 @@ public unsafe partial class LuaNative
         lua_pushcclosure(L, Marshal.GetFunctionPointerForDelegate(f), 0);
     }
 
-    public static ulong lua_strlen(lua_State* L, int i)
+    public static nuint lua_strlen(lua_State* L, int i)
     {
         return lua_objlen(L, i);
     }
@@ -479,7 +479,7 @@ public unsafe partial class LuaNative
 
     public static string? lua_tostring(lua_State* L, int i)
     {
-        ulong temp = 0; // NOP
+        nuint temp = 0; // NOP
         return Slua_tolstring(L, i, ref temp);
     }
 
@@ -587,7 +587,7 @@ public unsafe partial class LuaNative
     public static partial double lua_tonumberx(lua_State* L, int idx, ref int isnum);
 
     [LuaNativeImport]
-    public static partial long lua_tointegerx(lua_State* L, int idx, ref int isnum);
+    public static partial nint lua_tointegerx(lua_State* L, int idx, ref int isnum);
 
     [LuaNativeImport]
     public static partial int lua_isyieldable(lua_State* L);
@@ -633,10 +633,10 @@ public unsafe partial class LuaNative
     public static partial double luaL_optnumber(lua_State* L, int nArg, double def);
 
     [LuaNativeImport]
-    public static partial long luaL_checkinteger(lua_State* L, int numArg);
+    public static partial nint luaL_checkinteger(lua_State* L, int numArg);
 
     [LuaNativeImport]
-    public static partial long luaL_optinteger(lua_State* L, int nArg, long def);
+    public static partial nint luaL_optinteger(lua_State* L, int nArg, nint def);
 
     [LuaNativeImport]
     public static partial void luaL_checkstack(lua_State* L, int sz, string msg);
@@ -748,19 +748,19 @@ public unsafe partial class LuaNative
         return (int)luaL_checkinteger(L, n);
     }
 
-    public static int luaL_optint(lua_State* L, int n, long d)
+    public static int luaL_optint(lua_State* L, int n, nint d)
     {
         return (int)luaL_optinteger(L, n, d);
     }
 
-    public static long luaL_checklong(lua_State* L, int n)
+    public static nint luaL_checknint(lua_State* L, int n)
     {
-        return (long)luaL_checkinteger(L, n);
+        return (nint)luaL_checkinteger(L, n);
     }
 
-    public static long luaL_optlong(lua_State* L, int n, long d)
+    public static nint luaL_optnint(lua_State* L, int n, nint d)
     {
-        return (long)luaL_optinteger(L, n, d);
+        return (nint)luaL_optinteger(L, n, d);
     }
 
     public static string? luaL_typename(lua_State* L, int i)
