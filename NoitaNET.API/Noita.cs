@@ -14,62 +14,62 @@ public unsafe partial class Noita
         L = LuaNative.luaL_newstate();
     }
 
-    public int EntityLoad(string filename)
-    {
-        LuaNative.lua_pushstring(L, filename);
-        EngineAPIFunctionTable.EntityLoad(L);
+    //public int EntityLoad(string filename)
+    //{
+    //    LuaNative.lua_pushstring(L, filename);
+    //    EngineAPIFunctionTable.EntityLoad(L);
 
-        return (int)LuaNative.lua_tointeger(L, -1);
-    }
+    //    return (int)LuaNative.lua_tointeger(L, -1);
+    //}
 
-    public int EntityLoad(string filename, Vector2 position)
-    {
-        LuaNative.lua_pushstring(L, filename);
-        LuaNative.lua_pushnumber(L, position.X);
-        LuaNative.lua_pushnumber(L, position.Y);
-        EngineAPIFunctionTable.EntityLoad(L);
+    //public int EntityLoad(string filename, Vector2 position)
+    //{
+    //    LuaNative.lua_pushstring(L, filename);
+    //    LuaNative.lua_pushnumber(L, position.X);
+    //    LuaNative.lua_pushnumber(L, position.Y);
+    //    EngineAPIFunctionTable.EntityLoad(L);
 
-        int result = (int)LuaNative.lua_tointeger(L, -1);
+    //    int result = (int)LuaNative.lua_tointeger(L, -1);
 
-        LuaNative.lua_settop(L, 0);
+    //    LuaNative.lua_settop(L, 0);
 
-        return result;
-    }
+    //    return result;
+    //}
 
-    public void EntityKill(int id)
-    {
-        LuaNative.lua_pushnumber(L, id);
-        EngineAPIFunctionTable.EntityKill(L);
-        LuaNative.lua_settop(L, 0);
-    }
+    //public void EntityKill(int id)
+    //{
+    //    LuaNative.lua_pushnumber(L, id);
+    //    EngineAPIFunctionTable.EntityKill(L);
+    //    LuaNative.lua_settop(L, 0);
+    //}
 
-    public int[] EntityGetWithTag(string tag)
-    {
-        LuaNative.lua_pushstring(L, tag);
-        EngineAPIFunctionTable.EntityGetWithTag(L);
+    //public int[] EntityGetWithTag(string tag)
+    //{
+    //    LuaNative.lua_pushstring(L, tag);
+    //    EngineAPIFunctionTable.EntityGetWithTag(L);
 
-        int length = (int)LuaNative.lua_objlen(L, 2);
+    //    int length = (int)LuaNative.lua_objlen(L, 2);
 
-        int[] result = new int[length]; 
+    //    int[] result = new int[length]; 
 
-        for (int i = 0; i < length; i++)
-        {
-            LuaNative.lua_rawgeti(L, -1, i + 1);
-            result[i] = (int)LuaNative.lua_tointeger(L, -1);
+    //    for (int i = 0; i < length; i++)
+    //    {
+    //        LuaNative.lua_rawgeti(L, -1, i + 1);
+    //        result[i] = (int)LuaNative.lua_tointeger(L, -1);
 
-            LuaNative.lua_pop(L, 1); 
-        }
+    //        LuaNative.lua_pop(L, 1); 
+    //    }
 
-        LuaNative.lua_settop(L, 0);
+    //    LuaNative.lua_settop(L, 0);
         
-        return result;
-    }
+    //    return result;
+    //}
 
-    public double Random()
-    {
-        EngineAPIFunctionTable.Random(L);
-        double n = LuaNative.lua_tonumber(L, -1);
-        LuaNative.lua_settop(L, 0);
-        return n;
-    }
+    //public double Random()
+    //{
+    //    EngineAPIFunctionTable.Random(L);
+    //    double n = LuaNative.lua_tonumber(L, -1);
+    //    LuaNative.lua_settop(L, 0);
+    //    return n;
+    //}
 }

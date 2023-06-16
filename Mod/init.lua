@@ -52,7 +52,7 @@ function GetAndRegisterAllFunctions()
     local func = getfenv()[funcname]
     if not func then return end
     local addr = tonumber(tostring(func):sub(11))
-    lib.RegisterEngineAPIFunction(name addr)
+    lib.RegisterEngineAPIFunction(name, addr)
   end
 
   local docsFile = io.open("tools_modding/lua_api_documentation.txt", "rt")
