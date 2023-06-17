@@ -183,6 +183,12 @@ public unsafe partial class Noita
     }
 
     // TODO
+    public void ComponentObjectGetValue2()
+    {
+        throw new NotImplementedException();
+    }
+
+    // TODO
     public void ComponentObjectSetValue2()
     {
         throw new NotImplementedException();
@@ -190,6 +196,12 @@ public unsafe partial class Noita
 
     // TODO
     public void EntityAddComponent2()
+    {
+        throw new NotImplementedException();
+    }
+
+    // TODO
+    public void BiomeGetValue()
     {
         throw new NotImplementedException();
     }
@@ -229,6 +241,19 @@ public unsafe partial class Noita
     {
         throw new NotImplementedException();
     }
+
+    // TODO
+    public void dofile()
+    {
+        throw new NotImplementedException();
+    }
+
+    // TODO
+    public void dofile_once()
+    {
+        throw new NotImplementedException();
+    }
+
 
     //public int EntityLoad(string filename)
     //{

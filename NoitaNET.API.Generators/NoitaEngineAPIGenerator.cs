@@ -34,6 +34,7 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
         {
             StringBuilder builder = new StringBuilder();
 
+            builder.AppendLine("using NoitaNET.API.Lua;");
             builder.AppendLine("/// Auto-generated ///");
             builder.AppendLine("namespace NoitaNET.API;");
             builder.AppendLine("#nullable enable");
@@ -54,6 +55,8 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
                 content = content.Replace("-> (x:number,y:number)|nil", "-> x:number,y:number|nil");
 
                 content = content.Replace("(Debugish", "[(Debugish");
+
+                content = content.Replace("multiple types", "multiple_types");
 
                 if (content.Contains("[") && !content.EndsWith("]"))
                 {
@@ -207,11 +210,11 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
 
             if (replacedRetval.StartsWith("{") && replacedRetval.EndsWith("}"))
             {
-                string type = retval;
+                string type = replacedRetval;
 
-                if (retval.Contains(":"))
+                if (replacedRetval.Contains(":"))
                 {
-                    type = retval.Remove(1, retval.IndexOf(":"));
+                    type = replacedRetval.Remove(1, replacedRetval.IndexOf(":"));
                 }
 
                 result.Add(new LuaDocReturnValue("return_value_table", replacedRetval, GetCSharpType(type) + (nullable ? "?" : "")));
@@ -227,17 +230,38 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
                 {
                     type = name;
 
-                    // For case BiomeMapGetName( x:number = camera_x, y:number = camera_y ) -> name
-                    if (type == name)
+                    // For cases like -> name and -> component_id
+                    if (type == "name")
                     {
                         type = "string";
                     }
+                    if (type == "component_id")
+                    {
+                        type = "int";
+                    }
+
                     name = $"return_value_{type}";
                 }
                 else
                 {
                     name = $"return_value_{name}";
                     type = nameTypeSplits[1].Trim();
+                }
+
+                if (type == "int_body_id")
+                {
+                    type = "int";
+                    name = "return_value_body_id";
+                }
+                else if (type == "bool_is_new")
+                {
+                    type = "bool";
+                    name = "return_value_is_new";
+                }
+                else if (type == "new_text")
+                {
+                    type = "string";
+                    name = "return_new_text";
                 }
 
                 result.Add(new LuaDocReturnValue(name, type, GetCSharpType(type) + (nullable ? "?" : "")));
@@ -259,16 +283,18 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
             case "string":
                 return "string";
             case "int":
-                return "int";
+                return "nint";
             case "uint":
-                return "uint";
+                return "nuint";
             case "number":
             case "float":
                 return "double";
             case "bool":
                 return "bool";
+            case "{item_entity_id}":
+            case "{component_id}":
             case "{int}":
-                return "int[]";
+                return "nint[]";
             case "{string}":
                 return "string[]";
             case "{string-string}":
@@ -315,6 +341,149 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
             builder.AppendLine($")");
 
             builder.AppendLine("{");
+
+            if (parameters is not null)
+            {
+                foreach (LuaDocParameter parameter in parameters)
+                {
+                    switch (parameter.CSharpType)
+                    {
+                        case "nint":
+                            builder.AppendLine($"LuaNative.lua_pushinteger(L, {parameter.Name});");
+                            break;
+                        case "nuint":
+                            builder.AppendLine($"unchecked {{ LuaNative.lua_pushinteger(L, (nint){parameter.Name}); }}");
+                            break;
+                        case "double":
+                            builder.AppendLine($"LuaNative.lua_pushnumber(L, {parameter.Name});");
+                            break;
+                        case "string":
+                            builder.AppendLine($"LuaNative.lua_pushstring(L, {parameter.Name});");
+                            break;
+                        case "bool":
+                            builder.AppendLine($"LuaNative.lua_pushboolean(L, {parameter.Name} ? 1 : 0);");
+                            break;
+                    }
+                }
+            }
+
+            builder.AppendLine($"EngineAPIFunctionTable.{name}(L);");
+
+            if (returnValues is not null)
+            {
+                int tableCount = 0;
+                
+
+                for (int i = 0; i < returnValues.Count; i++)
+                {
+                    int stackIndex = -(i) - 1;
+
+                    void WriteTable(string type)
+                    {
+                        string lua_call = "";
+
+                        switch (type)
+                        {
+                            case "nint":
+                                lua_call = $"LuaNative.lua_tointeger(L, {stackIndex})";
+                                break;
+                            case "double":
+                                lua_call = $"LuaNative.lua_todouble(L, {stackIndex})";
+                                break;
+                            case "string":
+                                lua_call = $"LuaNative.lua_tostring(L, {stackIndex})";
+                                break;
+                        }
+
+                        builder.AppendLine($"nuint __tableLength{tableCount} = LuaNative.lua_objlen(L, {stackIndex});");
+                        builder.AppendLine($"{returnValues[i].Name} = new {type}[__tableLength{tableCount}];");
+
+                        builder.AppendLine(
+                           $$"""
+                            for (int i = 0; (nuint)i < __tableLength{{tableCount}}; i++)
+                            {
+                                LuaNative.lua_rawgeti(L, {{stackIndex}}, i + 1);
+                                {{returnValues[i].Name}}[i] = {{lua_call}};
+
+                                LuaNative.lua_pop(L, 1); 
+                            }
+                            """);
+                    }
+
+                    switch (returnValues[i].CSharpType)
+                    {
+                        case "nint":
+                            builder.AppendLine($"{returnValues[i].Name} = LuaNative.lua_tointeger(L, {stackIndex});");
+                            break;
+                        case "nint?":
+                            builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 1) {{ {returnValues[i].Name} = null; }} else {{ {returnValues[i].Name} = LuaNative.lua_tointeger(L, {stackIndex}); }}");
+                            break;
+                        case "nuint":
+                            builder.AppendLine($"unchecked {{ {returnValues[i].Name} = (nuint)LuaNative.lua_tointeger(L, {stackIndex}); }}");
+                            break;
+                        case "nuint?":
+                            builder.AppendLine($"unchecked {{ if (LuaNative.lua_isnil(L, {stackIndex}) == 1) {{ {returnValues[i].Name} = null; }} else {{ {returnValues[i].Name} = (nuint)LuaNative.lua_tointeger(L, {stackIndex}); }} }}");
+                            break;
+                        case "double":
+                            builder.AppendLine($"{returnValues[i].Name} = LuaNative.lua_tonumber(L, -1);");
+                            break;
+                        case "double?":
+                            builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 1) {{ {returnValues[i].Name} = null; }} else {{ {returnValues[i].Name} = LuaNative.lua_tonumber(L, {stackIndex}); }}");
+                            break;
+                        case "string":
+                            builder.AppendLine($"{returnValues[i].Name} = LuaNative.lua_tostring(L, -1)!;");
+                            break;
+                        case "string?":
+                            builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 1) {{ {returnValues[i].Name} = null; }} else {{ {returnValues[i].Name} = LuaNative.lua_tostring(L, {stackIndex})!; }}");
+                            break;
+                        case "bool":
+                            builder.AppendLine($"{returnValues[i].Name} = LuaNative.lua_toboolean(L, -1) == 1 ? true : false;");
+                            break;
+                        case "bool?":
+                            builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 1) {{ {returnValues[i].Name} = null; }} else {{ {returnValues[i].Name} = LuaNative.lua_toboolean(L, {stackIndex}) == 1 ? true : false; }}");
+                            break;
+                        case "nint[]":
+                            {
+                                WriteTable("nint");
+                            }
+                            break;
+                        case "nint[]?":
+                            {
+                                builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 0) {{");
+                                WriteTable("nint");
+                                builder.AppendLine($"}} else {{ {returnValues[i].Name} = null; }}");
+                            }
+                            break;
+                        case "double[]":
+                            {
+                                WriteTable("double");
+                            }
+                            break;
+                        case "double[]?":
+                            {
+                                builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 0) {{");
+                                WriteTable("double");
+                                builder.AppendLine($"}} else {{ {returnValues[i].Name} = null; }}");
+                            }
+                            break;
+                        case "string[]":
+                            {
+                                WriteTable("string");
+                            }
+                            break;
+                        case "string[]?":
+                            {
+                                builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 0) {{");
+                                WriteTable("string");
+                                builder.AppendLine($"}} else {{ {returnValues[i].Name} = null; }}");
+                            }
+                            break;
+                    }
+                }
+            }
+
+            builder.AppendLine($"LuaNative.lua_settop(L, 0);");
+
             builder.AppendLine("}");
         }
 
