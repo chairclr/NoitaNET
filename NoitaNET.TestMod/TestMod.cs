@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Numerics;
-using NoitaNET.API;
+﻿using NoitaNET.API;
 using NoitaNET.API.Logging;
 
 namespace NoitaNET.TestMod;

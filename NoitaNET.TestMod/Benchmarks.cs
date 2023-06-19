@@ -4,6 +4,7 @@ using NoitaNET.API;
 using NoitaNET.API.Logging;
 
 namespace NoitaNET.TestMod;
+
 internal class Benchmarks
 {
     public Noita Noita;

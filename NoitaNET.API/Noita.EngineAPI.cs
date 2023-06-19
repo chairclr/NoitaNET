@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-using NoitaNET.API.Lua;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using NoitaNET.API.Lua;
 
 namespace NoitaNET.API;
 

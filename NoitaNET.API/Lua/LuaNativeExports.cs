@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Security;
 using NoitaNET.API.Logging;
 
 namespace NoitaNET.API.Lua;

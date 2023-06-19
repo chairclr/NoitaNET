@@ -1,9 +1,6 @@
 ﻿using System.Reflection;
-using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using NoitaNET.API;
-using NoitaNET.API.Logging;
-using NoitaNET.API.Lua;
 using NoitaNET.Loader.Services;
 
 namespace NoitaNET.Loader;
@@ -96,7 +93,7 @@ public unsafe class EntryHandler
         {
             if (engineAPIMap.TryGetValue(fields[i].Name, out nint fn))
             {
-                fields[i].SetValue(null,  fn);
+                fields[i].SetValue(null, fn);
             }
         }
     }
