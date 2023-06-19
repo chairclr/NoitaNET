@@ -16,7 +16,7 @@ public class PathService
 
     static PathService()
     {
-        WorkingDirectory = Path.GetDirectoryName(typeof(Mod).Assembly.Location!)!
+        WorkingDirectory = Path.GetDirectoryName(typeof(Mod).Assembly.Location!)!;
 
         LogsDirectory = Path.Combine(WorkingDirectory, "Logs");
 
