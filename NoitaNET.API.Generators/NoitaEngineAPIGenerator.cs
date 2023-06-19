@@ -17,7 +17,7 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
     {
         IncrementalValueProvider<ImmutableArray<AdditionalText>> apiDocs = context.AdditionalTextsProvider.Where(file => file.Path.EndsWith("lua_api_documentation.txt")).Collect();
 
-        IncrementalValueProvider<INamedTypeSymbol> realTypeSymbol = context.CompilationProvider.Select((x, c) => x.GetMemberTypeByMetadataName("NoitaNET.API.Noita", "EngineAPI")!);
+        IncrementalValueProvider<INamedTypeSymbol> realTypeSymbol = context.CompilationProvider.Select((x, c) => x.GetTypeByMetadataName("NoitaNET.API.Noita.EngineAPI")!);
 
         // Skip(2) is to skip the first two lines of the API docs
         IncrementalValueProvider<string[]> contentArray = apiDocs.Select((x, c) => x[0].GetText(c)!.ToString().Replace("\r", "").Replace("  ", " ").Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).Skip(2).ToArray());
@@ -30,12 +30,11 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
         {
             StringBuilder builder = new StringBuilder();
 
+            builder.AppendLine("using NoitaNET.API;");
             builder.AppendLine("using NoitaNET.API.Lua;");
             builder.AppendLine("/// Auto-generated ///");
-            builder.AppendLine("namespace NoitaNET.API;");
+            builder.AppendLine("namespace NoitaNET.API.Noita;");
             builder.AppendLine("#nullable enable");
-            builder.AppendLine("partial class Noita");
-            builder.AppendLine("{");
             builder.AppendLine("unsafe partial class EngineAPI");
             builder.AppendLine("{");
 
@@ -96,7 +95,6 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
             }
 
             builder.AppendLine("}");
-            builder.AppendLine("}");
 
             spc.AddSource($"Noita.EngineAPI.g.cs", builder.ToString());
 
@@ -104,7 +102,7 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
 
             builder.AppendLine("using unsafe APIFunction = delegate* unmanaged[Cdecl, SuppressGCTransition]<NoitaNET.API.Lua.LuaNative.lua_State*, void>;");
             builder.AppendLine("/// Auto-generated ///");
-            builder.AppendLine("namespace NoitaNET.API;");
+            builder.AppendLine("namespace NoitaNET.API.Noita;");
             builder.AppendLine("#nullable enable");
             builder.AppendLine("unsafe partial class EngineAPIFunctionTable");
             builder.AppendLine("{");

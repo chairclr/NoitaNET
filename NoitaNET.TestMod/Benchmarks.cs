@@ -2,16 +2,17 @@
 using System.Runtime.CompilerServices;
 using NoitaNET.API;
 using NoitaNET.API.Logging;
+using NoitaNET.API.Noita;
 
 namespace NoitaNET.TestMod;
 
 internal class Benchmarks
 {
-    public Noita Noita;
+    public EngineAPI RawEngineAPI;
 
-    public Benchmarks(Noita noita)
+    public Benchmarks(EngineAPI engineAPI)
     {
-        Noita = noita;
+        RawEngineAPI = engineAPI;
     }
 
     public void BenchmarkPureRandomCalls(long n)
@@ -21,7 +22,7 @@ internal class Benchmarks
         double result = 1;
         for (long i = 0; i < n; i++)
         {
-            //result = Noita.Random();
+            RawEngineAPI.Random(out result);
         }
         sw.Stop();
 
@@ -34,10 +35,11 @@ internal class Benchmarks
     {
         Stopwatch sw = Stopwatch.StartNew();
 
-        long result = 1;
+        nint result = 1;
         for (long i = 0; i < n; i++)
         {
-            //result = Noita.EntityGetWithTag("player_unit")[0];
+            RawEngineAPI.EntityGetWithTag("player_unit", out nint[] results);
+            result = results[0];
         }
         sw.Stop();
 

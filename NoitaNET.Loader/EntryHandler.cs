@@ -83,10 +83,10 @@ public unsafe class EntryHandler
             engineAPIMap.Add(engineAPIFunctions[i].Name, engineAPIFunctions[i].FunctionPointer);
         }
 
-        // Set the function pointers for the NoitaNET -> Noita lua API
-        // They're contained in an internal class, so we have to use reflection to get the type as well
-        FieldInfo[] fields = typeof(Noita).Assembly
-            .GetType("NoitaNET.API.EngineAPIFunctionTable")!
+        // Set the function pointers for the raw EngineAPI to use
+        // They're contained in an internal class in another assembly, so we have to use reflection to get the type as well
+        FieldInfo[] fields = typeof(Mod).Assembly
+            .GetType("NoitaNET.API.Noita.EngineAPIFunctionTable")!
             .GetFields(BindingFlags.Static | BindingFlags.Public);
 
         for (int i = 0; i < fields.Length; i++)
