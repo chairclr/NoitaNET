@@ -278,32 +278,19 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
             return luaType;
         }
 
-        switch (luaType)
+        return luaType switch
         {
-            case "string":
-                return "string";
-            case "int":
-                return "nint";
-            case "uint":
-                return "nuint";
-            case "number":
-            case "float":
-                return "double";
-            case "bool":
-                return "bool";
-            case "{item_entity_id}":
-            case "{component_id}":
-            case "{int}":
-                return "nint[]";
-            case "{string}":
-                return "string[]";
-            case "{string-string}":
-                return "System.Collections.Generic.Dictionary<string, string>";
-            case "obj":
-                return "NoitaNET.API.Gui.GuiUserData";
-            default:
-                throw new Exception($"Unknown lua type {luaType}");
-        }
+            "string" => "string",
+            "int" => "nint",
+            "uint" => "nuint",
+            "number" or "float" => "double",
+            "bool" => "bool",
+            "{item_entity_id}" or "{component_id}" or "{int}" => "nint[]",
+            "{string}" => "string[]",
+            "{string-string}" => "System.Collections.Generic.Dictionary<string, string>",
+            "obj" => "NoitaNET.API.Gui.GuiUserData",
+            _ => throw new Exception($"Unknown lua type {luaType}"),
+        };
     }
 
     private static void WriteMethod(StringBuilder builder, string name, List<LuaDocParameter>? parameters, List<LuaDocParameter>? overloadParameters, List<LuaDocReturnValue>? returnValues)
@@ -363,6 +350,9 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
                         case "bool":
                             builder.AppendLine($"LuaNative.lua_pushboolean(L, {parameter.Name} ? 1 : 0);");
                             break;
+                        case "NoitaNET.API.Gui.GuiUserData":
+                            builder.AppendLine($"LuaNative.lua_pushlightuserdata(L, {parameter.Name}.InternalPointer);");
+                            break;
                     }
                 }
             }
@@ -391,7 +381,7 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
                                 lua_call = $"LuaNative.lua_todouble(L, {stackIndex})";
                                 break;
                             case "string":
-                                lua_call = $"LuaNative.lua_tostring(L, {stackIndex})";
+                                lua_call = $"LuaNative.lua_tostring(L, {stackIndex})!";
                                 break;
                         }
 
@@ -477,6 +467,9 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
                                 WriteTable("string");
                                 builder.AppendLine($"}} else {{ {returnValues[i].Name} = null; }}");
                             }
+                            break;
+                        case "NoitaNET.API.Gui.GuiUserData":
+                            builder.AppendLine($"{returnValues[i].Name} = new NoitaNET.API.Gui.GuiUserData(LuaNative.lua_touserdata(L, {stackIndex}));");
                             break;
                     }
                 }
