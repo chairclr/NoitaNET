@@ -5,6 +5,10 @@ namespace NoitaNET.API.Lua;
 #pragma warning disable SYSLIB1054
 #pragma warning disable IDE1006
 #pragma warning disable CA1401
+
+/// <summary>
+/// Defines luajit api functions and primitives
+/// </summary>
 public unsafe partial class LuaNative
 {
     private const string DllName = "lua51.dll";

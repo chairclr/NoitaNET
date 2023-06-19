@@ -12,8 +12,14 @@ namespace NoitaNET.API;
 /// </remarks>
 public abstract unsafe class Mod
 {
+    /// <summary>
+    /// The name of the mod, as specified in mod.xml
+    /// </summary>
     public readonly string Name;
 
+    /// <summary>
+    /// The description of the mod, as specified in mod.xml
+    /// </summary>
     public readonly string Description;
 
     // We use ThreadLocal here because the user might try to access the RawEngineAPI from another thread
@@ -22,8 +28,14 @@ public abstract unsafe class Mod
 
     private readonly ThreadLocal<EngineAPI> ThreadLocalEngineAPI;
 
+    /// <summary>
+    /// A thread-safe Lua environment manager
+    /// </summary>
     public LuaManager LuaManager => ThreadLocalLuaManager.Value!;
 
+    /// <summary>
+    /// A thread-safe interface to interact with the raw Noita C API
+    /// </summary>
     public EngineAPI RawEngineAPI => ThreadLocalEngineAPI.Value!;
 
     public Mod(string name, string description)
@@ -37,8 +49,14 @@ public abstract unsafe class Mod
         ThreadLocalEngineAPI = new ThreadLocal<EngineAPI>(() => new EngineAPI(LuaManager));
     }
 
+    /// <summary>
+    /// Called every frame before the world updates
+    /// </summary>
     public virtual void OnWorldPreUpdate() { }
 
+    /// <summary>
+    /// Called every frame after the world updates
+    /// </summary>
     public virtual void OnWorldPostUpdate() { }
 
     public virtual void OnModPreInit() { }

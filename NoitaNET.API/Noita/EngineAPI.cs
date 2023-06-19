@@ -2,6 +2,9 @@
 
 namespace NoitaNET.API.Noita;
 
+/// <summary>
+/// Represents the raw C/++ API that the game exposes to mods
+/// </summary>
 public unsafe partial class EngineAPI
 {
     private readonly LuaNative.lua_State* L;

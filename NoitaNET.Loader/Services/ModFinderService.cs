@@ -7,6 +7,9 @@ namespace NoitaNET.Loader.Services;
 
 internal class ModFinderService
 {
+    /// <summary>
+    /// Finds the path of the active mods that have a defined noitanet_assembly_path attribute  
+    /// </summary>
     public static List<ModDescription> FindMods(string[] activeMods)
     {
         List<ModDescription> mods = new List<ModDescription>();

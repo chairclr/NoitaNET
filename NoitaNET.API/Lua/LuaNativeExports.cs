@@ -11,6 +11,11 @@ public unsafe partial class LuaNative
     [DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
     private static extern nint GetProcAddress(nint hModule, string procName);
 
+    /// <summary>
+    /// Gets the address of luajit a function by name
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
     public static nint GetLuaExport(string name)
     {
         if (LuaModule == 0)
