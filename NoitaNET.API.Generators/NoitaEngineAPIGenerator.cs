@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Data.Common;
 using System.Linq;
-using System.Reflection.Metadata;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 
 namespace NoitaNET.API.Generators;
@@ -329,6 +325,10 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
 
             builder.AppendLine("{");
 
+#if DEBUG_ALL_API_CALLS
+            builder.AppendLine($"NoitaNET.API.Logging.Logger.Instance.LogDebug($\"Calling {name}, EngineAPIFunctionTable.{name}: {{((nint)EngineAPIFunctionTable.{name}):X}}\");");
+#endif
+
             if (parameters is not null)
             {
                 foreach (LuaDocParameter parameter in parameters)
@@ -362,7 +362,7 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
             if (returnValues is not null)
             {
                 int tableCount = 0;
-                
+
 
                 for (int i = 0; i < returnValues.Count; i++)
                 {

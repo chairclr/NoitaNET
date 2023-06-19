@@ -10,6 +10,7 @@ public class TestMod : Mod
 {
     private int UpdateCount = 0;
     private const int BenchmarkEveryNFrames = 4 * 60;
+    private bool RunOnce = false;
 
     private Benchmarks Benchmarks;
 
@@ -25,13 +26,21 @@ public class TestMod : Mod
     {
         UpdateCount++;
 
-        if (UpdateCount % BenchmarkEveryNFrames == 0)
+        if (!RunOnce && UpdateCount % BenchmarkEveryNFrames == 0)
         {
+            RunOnce = true;
             UpdateCount = 0;
 
-            //int id =  Noita.EntityLoad(@"data/entities/animals/boss_fish/fish_giga.xml", new Vector2(0, -200));
+            //Noita.CellFactory_GetType("water", out nint waterType);
+            //Noita.CellFactory_GetType("magic_liquid_protection_all", out nint amborsiaType);
 
-            //Logger.Instance.LogInformation($"ID: {id}");
+            //Logger.Instance.LogInformation($"Converting {waterType} to {amborsiaType}");
+
+            //Noita.ConvertMaterialEverywhere(waterType, amborsiaType);
+
+            //Noita.EntityLoad(@"data/entities/animals/boss_fish/fish_giga.xml", 0, -200, out nint return_value_entity_id);
+
+            //Logger.Instance.LogInformation($"ID: {return_value_entity_id}");
         }
     }
 
