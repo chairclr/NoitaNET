@@ -7,7 +7,7 @@ namespace NoitaNET.TestMod;
 public class TestMod : Mod
 {
     private int UpdateCount = 0;
-    private const int BenchmarkEveryNFrames = 4 * 60;
+    private const int BenchmarkEveryNFrames = 1;
     private bool RunOnce = false;
 
     private Benchmarks Benchmarks;
@@ -24,9 +24,26 @@ public class TestMod : Mod
     {
         UpdateCount++;
 
+        //Noita.RawAPI.EntityGetWithTag("player_unit", out nint[] tempEntities);
+
+        //if (tempEntities.Length != 1) return;
+
+        //Noita.RawAPI.EntityGetTransform(tempEntities[0], out double x, out double y, out _, out _, out _);
+
+        //Noita.RawAPI.EntityGetInRadius(x, y, 40, out nint[] entitiesInRadius);
+
+        //foreach (nint entity in entitiesInRadius)
+        //{
+        //    Noita.RawAPI.EntityHasTag(entity, "player_unit", out bool isPlayer);
+
+        //    if (isPlayer)
+        //        continue;
+
+        //    Noita.RawAPI.EntityInflictDamage(entity, 1, "slice", "Get sliced by c#", "NORMAL", 0, 0);
+        //}
+
         if (!RunOnce && UpdateCount % BenchmarkEveryNFrames == 0)
         {
-            RunOnce = true;
             UpdateCount = 0;
 
             //Noita.CellFactory_GetType("water", out nint waterType);

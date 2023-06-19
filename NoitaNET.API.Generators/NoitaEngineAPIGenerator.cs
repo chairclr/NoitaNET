@@ -17,7 +17,7 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
     {
         IncrementalValueProvider<ImmutableArray<AdditionalText>> apiDocs = context.AdditionalTextsProvider.Where(file => file.Path.EndsWith("lua_api_documentation.txt")).Collect();
 
-        IncrementalValueProvider<INamedTypeSymbol> realTypeSymbol = context.CompilationProvider.Select((x, c) => x.GetTypeByMetadataName("NoitaNET.API.Noita")!);
+        IncrementalValueProvider<INamedTypeSymbol> realTypeSymbol = context.CompilationProvider.Select((x, c) => x.GetMemberTypeByMetadataName("NoitaNET.API.Noita", "EngineAPI")!);
 
         // Skip(2) is to skip the first two lines of the API docs
         IncrementalValueProvider<string[]> contentArray = apiDocs.Select((x, c) => x[0].GetText(c)!.ToString().Replace("\r", "").Replace("  ", " ").Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).Skip(2).ToArray());
@@ -34,7 +34,9 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
             builder.AppendLine("/// Auto-generated ///");
             builder.AppendLine("namespace NoitaNET.API;");
             builder.AppendLine("#nullable enable");
-            builder.AppendLine("unsafe partial class Noita");
+            builder.AppendLine("partial class Noita");
+            builder.AppendLine("{");
+            builder.AppendLine("unsafe partial class EngineAPI");
             builder.AppendLine("{");
 
             List<string> functionPointersToAddToTable = new List<string>(collectedUnionInfo.Length);
@@ -93,6 +95,7 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
                 builder.AppendLine();
             }
 
+            builder.AppendLine("}");
             builder.AppendLine("}");
 
             spc.AddSource($"Noita.EngineAPI.g.cs", builder.ToString());
@@ -368,6 +371,10 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
                 {
                     int stackIndex = -(i) - 1;
 
+                    int returnValueIndex = returnValues.Count - i - 1;
+
+                    LuaDocReturnValue returnValue = returnValues[returnValueIndex];
+
                     void WriteTable(string type)
                     {
                         string lua_call = "";
@@ -386,51 +393,51 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
                         }
 
                         builder.AppendLine($"nuint __tableLength{tableCount} = LuaNative.lua_objlen(L, {stackIndex});");
-                        builder.AppendLine($"{returnValues[i].Name} = new {type}[__tableLength{tableCount}];");
+                        builder.AppendLine($"{returnValue.Name} = new {type}[__tableLength{tableCount}];");
 
                         builder.AppendLine(
                            $$"""
                             for (int i = 0; (nuint)i < __tableLength{{tableCount}}; i++)
                             {
                                 LuaNative.lua_rawgeti(L, {{stackIndex}}, i + 1);
-                                {{returnValues[i].Name}}[i] = {{lua_call}};
+                                {{returnValue.Name}}[i] = {{lua_call}};
 
                                 LuaNative.lua_pop(L, 1); 
                             }
                             """);
                     }
 
-                    switch (returnValues[i].CSharpType)
+                    switch (returnValue.CSharpType)
                     {
                         case "nint":
-                            builder.AppendLine($"{returnValues[i].Name} = LuaNative.lua_tointeger(L, {stackIndex});");
+                            builder.AppendLine($"{returnValue.Name} = LuaNative.lua_tointeger(L, {stackIndex});");
                             break;
                         case "nint?":
-                            builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 1) {{ {returnValues[i].Name} = null; }} else {{ {returnValues[i].Name} = LuaNative.lua_tointeger(L, {stackIndex}); }}");
+                            builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 1) {{ {returnValue.Name} = null; }} else {{ {returnValue.Name} = LuaNative.lua_tointeger(L, {stackIndex}); }}");
                             break;
                         case "nuint":
-                            builder.AppendLine($"unchecked {{ {returnValues[i].Name} = (nuint)LuaNative.lua_tointeger(L, {stackIndex}); }}");
+                            builder.AppendLine($"unchecked {{ {returnValue.Name} = (nuint)LuaNative.lua_tointeger(L, {stackIndex}); }}");
                             break;
                         case "nuint?":
-                            builder.AppendLine($"unchecked {{ if (LuaNative.lua_isnil(L, {stackIndex}) == 1) {{ {returnValues[i].Name} = null; }} else {{ {returnValues[i].Name} = (nuint)LuaNative.lua_tointeger(L, {stackIndex}); }} }}");
+                            builder.AppendLine($"unchecked {{ if (LuaNative.lua_isnil(L, {stackIndex}) == 1) {{ {returnValue.Name} = null; }} else {{ {returnValue.Name} = (nuint)LuaNative.lua_tointeger(L, {stackIndex}); }} }}");
                             break;
                         case "double":
-                            builder.AppendLine($"{returnValues[i].Name} = LuaNative.lua_tonumber(L, -1);");
+                            builder.AppendLine($"{returnValue.Name} = LuaNative.lua_tonumber(L, {stackIndex});");
                             break;
                         case "double?":
-                            builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 1) {{ {returnValues[i].Name} = null; }} else {{ {returnValues[i].Name} = LuaNative.lua_tonumber(L, {stackIndex}); }}");
+                            builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 1) {{ {returnValue.Name} = null; }} else {{ {returnValue.Name} = LuaNative.lua_tonumber(L, {stackIndex}); }}");
                             break;
                         case "string":
-                            builder.AppendLine($"{returnValues[i].Name} = LuaNative.lua_tostring(L, -1)!;");
+                            builder.AppendLine($"{returnValue.Name} = LuaNative.lua_tostring(L, {stackIndex})!;");
                             break;
                         case "string?":
-                            builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 1) {{ {returnValues[i].Name} = null; }} else {{ {returnValues[i].Name} = LuaNative.lua_tostring(L, {stackIndex})!; }}");
+                            builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 1) {{ {returnValue.Name} = null; }} else {{ {returnValue.Name} = LuaNative.lua_tostring(L, {stackIndex})!; }}");
                             break;
                         case "bool":
-                            builder.AppendLine($"{returnValues[i].Name} = LuaNative.lua_toboolean(L, -1) == 1 ? true : false;");
+                            builder.AppendLine($"{returnValue.Name} = LuaNative.lua_toboolean(L, {stackIndex}) == 1 ? true : false;");
                             break;
                         case "bool?":
-                            builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 1) {{ {returnValues[i].Name} = null; }} else {{ {returnValues[i].Name} = LuaNative.lua_toboolean(L, {stackIndex}) == 1 ? true : false; }}");
+                            builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 1) {{ {returnValue.Name} = null; }} else {{ {returnValue.Name} = LuaNative.lua_toboolean(L, {stackIndex}) == 1 ? true : false; }}");
                             break;
                         case "nint[]":
                             {
@@ -441,7 +448,7 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
                             {
                                 builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 0) {{");
                                 WriteTable("nint");
-                                builder.AppendLine($"}} else {{ {returnValues[i].Name} = null; }}");
+                                builder.AppendLine($"}} else {{ {returnValue.Name} = null; }}");
                             }
                             break;
                         case "double[]":
@@ -453,7 +460,7 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
                             {
                                 builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 0) {{");
                                 WriteTable("double");
-                                builder.AppendLine($"}} else {{ {returnValues[i].Name} = null; }}");
+                                builder.AppendLine($"}} else {{ {returnValue.Name} = null; }}");
                             }
                             break;
                         case "string[]":
@@ -465,11 +472,11 @@ public class NoitaEngineAPIGenerator : IIncrementalGenerator
                             {
                                 builder.AppendLine($"if (LuaNative.lua_isnil(L, {stackIndex}) == 0) {{");
                                 WriteTable("string");
-                                builder.AppendLine($"}} else {{ {returnValues[i].Name} = null; }}");
+                                builder.AppendLine($"}} else {{ {returnValue.Name} = null; }}");
                             }
                             break;
                         case "NoitaNET.API.Gui.GuiUserData":
-                            builder.AppendLine($"{returnValues[i].Name} = new NoitaNET.API.Gui.GuiUserData(LuaNative.lua_touserdata(L, {stackIndex}));");
+                            builder.AppendLine($"{returnValue.Name} = new NoitaNET.API.Gui.GuiUserData(LuaNative.lua_touserdata(L, {stackIndex}));");
                             break;
                     }
                 }
