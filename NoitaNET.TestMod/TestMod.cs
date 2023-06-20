@@ -7,7 +7,7 @@ namespace NoitaNET.TestMod;
 public class TestMod : Mod
 {
     private int UpdateCount = 0;
-    private const int BenchmarkEveryNFrames = 1;
+    private const int BenchmarkEveryNFrames = 60 * 1;
     private bool RunOnce = false;
 
     private Benchmarks Benchmarks;
@@ -46,6 +46,8 @@ public class TestMod : Mod
         {
             UpdateCount = 0;
 
+            Benchmarks.BenchmarkPushStringAndPopNew(50_000_000);
+            Benchmarks.BenchmarkPushStringAndPopOld(50_000_000);
             //Noita.CellFactory_GetType("water", out nint waterType);
             //Noita.CellFactory_GetType("magic_liquid_protection_all", out nint amborsiaType);
 

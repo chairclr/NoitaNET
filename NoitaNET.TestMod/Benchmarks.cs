@@ -1,8 +1,11 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using NoitaNET.API;
 using NoitaNET.API.Logging;
+using NoitaNET.API.Lua;
 using NoitaNET.API.Noita;
+using static NoitaNET.API.Lua.LuaNative;
 
 namespace NoitaNET.TestMod;
 
@@ -44,6 +47,53 @@ internal class Benchmarks
         sw.Stop();
 
         Log(nameof(BenchmarkGetPlayerByTag), n, sw);
+
+        Consume(result);
+    }
+
+    [DllImport("lua51.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    public static unsafe extern void lua_pushstring(LuaNative.lua_State* L, string s);
+
+    [DllImport("lua51.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    public static unsafe extern nint lua_tolstring(LuaNative.lua_State* L, int idx, ref nuint len);
+
+    public unsafe void BenchmarkPushStringAndPopNew(long n)
+    {
+        Stopwatch sw = Stopwatch.StartNew();
+
+        LuaNative.lua_State* L = LuaNative.luaL_newstate();
+        string result = "";
+        for (long i = 0; i < n; i++)
+        {
+            LuaNative.lua_pushstring(L, new string('x', 128));
+            result = LuaNative.lua_tostring(L, -1)!;
+            LuaNative.lua_settop(L, 0);
+        }
+        sw.Stop();
+
+        Log(nameof(BenchmarkPushStringAndPopNew), n, sw);
+
+        Consume(result);
+    }
+
+    public unsafe void BenchmarkPushStringAndPopOld(long n)
+    {
+        Stopwatch sw = Stopwatch.StartNew();
+
+        LuaNative.lua_State* L = LuaNative.luaL_newstate();
+        string result = "";
+        for (long i = 0; i < n; i++)
+        {
+            lua_pushstring(L, new string('x', 128));
+            nuint temp = 0;
+            result = Marshal.PtrToStringUTF8(lua_tolstring(L, -1, ref temp))!;
+            LuaNative.lua_settop(L, 0);
+        }
+        sw.Stop();
+
+        LuaNative.lua_close(L);
+
+        Log(nameof(BenchmarkPushStringAndPopOld), n, sw);
 
         Consume(result);
     }

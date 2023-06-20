@@ -77,14 +77,14 @@ public unsafe partial class LuaNative
 
     public delegate void luaJIT_profile_callback(nint data, lua_State* L, int samples, int vmstate);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaJIT_profile_start(lua_State* L, string mode, luaJIT_profile_callback cb, nint data);
+    [LuaNativeImport]
+    public static partial void luaJIT_profile_start(lua_State* L, string mode, luaJIT_profile_callback cb, nint data);
 
     [LuaNativeImport]
     public static partial void luaJIT_profile_stop(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern nint _luaJIT_profile_dumpstack(lua_State* L, string fmt, int depth, ref nint len);
+    [LuaNativeImport]
+    public static partial nint _luaJIT_profile_dumpstack(lua_State* L, string fmt, int depth, ref nint len);
 
     public static string? luaJIT_profile_dumpstack(lua_State* L, string fmt, int depth, ref nint len)
     {
@@ -219,11 +219,7 @@ public unsafe partial class LuaNative
     public static partial int lua_type(lua_State* L, int idx);
 
     [LuaNativeImport]
-    public static partial nint lua_typename(lua_State* L, int tp);
-    public static string? Slua_typename(lua_State* L, int tp)
-    {
-        return Marshal.PtrToStringAnsi(lua_typename(L, tp));
-    }
+    public static partial string? lua_typename(lua_State* L, int tp);
 
     [LuaNativeImport]
     public static partial int lua_equal(lua_State* L, int idx1, int idx2);
@@ -244,11 +240,7 @@ public unsafe partial class LuaNative
     public static partial int lua_toboolean(lua_State* L, int idx);
 
     [LuaNativeImport]
-    public static partial nint lua_tolstring(lua_State* L, int idx, ref nuint len);
-    public static string? Slua_tolstring(lua_State* L, int idx, ref nuint len)
-    {
-        return Marshal.PtrToStringAnsi(lua_tolstring(L, idx, ref len));
-    }
+    public static partial string? lua_tolstring(lua_State* L, int idx, ref nuint len);
 
     [LuaNativeImport]
     public static partial nuint lua_objlen(lua_State* L, int idx);
@@ -274,23 +266,11 @@ public unsafe partial class LuaNative
     [LuaNativeImport]
     public static partial void lua_pushinteger(lua_State* L, nint n);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_pushlstring(lua_State* L, string s, nint len);
+    [LuaNativeImport]
+    public static partial void lua_pushlstring(lua_State* L, string s, nint len);
 
-    [DllImport(DllName, CallingConvention = Convention, CharSet = CharSet.Ansi)]
-    public static extern void lua_pushstring(lua_State* L, string s);
-
-    // TODO:
-    // [LuaNativeImport]
-    // public static partial nint lua_pushvfstring(lua_State* L, string fmt, va_list argp);
-
-    // TODO:
-    // [DllImport(DllName, CallingConvention = Convention, EntryPoint = "lua_pushfstring")]
-    // public static partial nint _lua_pushfstring(lua_State* L, string fmt, params string[] args);
-    // public static string? lua_pushfstring(lua_State* L, string fmt, params string[] args)
-    // {
-    // 	return Marshal.PtrToStringAnsi(_lua_pushfstring(L, fmt, args));
-    // }
+    [LuaNativeImport]
+    public static partial void lua_pushstring(lua_State* L, string s);
 
     [LuaNativeImport]
     public static partial void lua_pushcclosure(lua_State* L, nint fn, int n);
@@ -307,8 +287,8 @@ public unsafe partial class LuaNative
     [LuaNativeImport]
     public static partial void lua_gettable(lua_State* L, int idx);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_getfield(lua_State* L, int idx, string k);
+    [LuaNativeImport]
+    public static partial void lua_getfield(lua_State* L, int idx, string k);
 
     [LuaNativeImport]
     public static partial void lua_rawget(lua_State* L, int idx);
@@ -331,8 +311,8 @@ public unsafe partial class LuaNative
     [LuaNativeImport]
     public static partial void lua_settable(lua_State* L, int idx);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void lua_setfield(lua_State* L, int idx, string k);
+    [LuaNativeImport]
+    public static partial void lua_setfield(lua_State* L, int idx, string k);
 
     [LuaNativeImport]
     public static partial void lua_rawset(lua_State* L, int idx);
@@ -355,8 +335,8 @@ public unsafe partial class LuaNative
     [LuaNativeImport]
     public static partial int lua_cpcall(lua_State* L, lua_CFunction func, nint ud);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_load(lua_State* L, lua_Reader reader, nint dt, string chunkname);
+    [LuaNativeImport]
+    public static partial int lua_load(lua_State* L, lua_Reader reader, nint dt, string chunkname);
 
     [LuaNativeImport]
     public static partial int lua_dump(lua_State* L, lua_Writer writer, nint data);
@@ -482,7 +462,7 @@ public unsafe partial class LuaNative
     public static string? lua_tostring(lua_State* L, int i)
     {
         nuint temp = 0; // NOP
-        return Slua_tolstring(L, i, ref temp);
+        return lua_tolstring(L, i, ref temp);
     }
 
     public static lua_State* lua_open()
@@ -521,32 +501,16 @@ public unsafe partial class LuaNative
     public static partial int lua_getinfo(lua_State* L, string what, lua_Debug ar);
 
     [LuaNativeImport]
-    public static partial nint lua_getlocal(lua_State* L, lua_Debug ar, int n);
-    public static string? Slua_getlocal(lua_State* L, lua_Debug ar, int n)
-    {
-        return Marshal.PtrToStringAnsi(lua_getlocal(L, ar, n));
-    }
+    public static partial string? lua_getlocal(lua_State* L, lua_Debug ar, int n);
 
     [LuaNativeImport]
-    public static partial nint lua_setlocal(lua_State* L, lua_Debug ar, int n);
-    public static string? Slua_setlocal(lua_State* L, lua_Debug ar, int n)
-    {
-        return Marshal.PtrToStringAnsi(lua_setlocal(L, ar, n));
-    }
+    public static partial string? lua_setlocal(lua_State* L, lua_Debug ar, int n);
 
     [LuaNativeImport]
-    public static partial nint lua_getupvalue(lua_State* L, int funcindex, int n);
-    public static string? Slua_getupvalue(lua_State* L, int funcindex, int n)
-    {
-        return Marshal.PtrToStringAnsi(lua_getupvalue(L, funcindex, n));
-    }
+    public static partial string? lua_getupvalue(lua_State* L, int funcindex, int n);
 
     [LuaNativeImport]
-    public static partial nint lua_setupvalue(lua_State* L, int funcindex, int n);
-    public static string? Slua_setupvalue(lua_State* L, int funcindex, int n)
-    {
-        return Marshal.PtrToStringAnsi(lua_setupvalue(L, funcindex, n));
-    }
+    public static partial string? lua_setupvalue(lua_State* L, int funcindex, int n);
 
     [LuaNativeImport]
     public static partial int lua_sethook(lua_State* L, lua_Hook func, int mask, int count);
@@ -566,8 +530,8 @@ public unsafe partial class LuaNative
     [LuaNativeImport]
     public static partial void lua_upvaluejoin(lua_State* L, int idx1, int n1, int idx2, int n2);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int lua_loadx(lua_State* L, lua_Reader reader, nint dt, string chunkname, string? mode);
+    [LuaNativeImport]
+    public static partial int lua_loadx(lua_State* L, lua_Reader reader, nint dt, string chunkname, string? mode);
 
     [LuaNativeImport]
     public static partial nint lua_version(lua_State* L);
@@ -596,37 +560,29 @@ public unsafe partial class LuaNative
 
     public const int LUA_ERRFILE = LUA_ERRERR + 1;
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_openlib(lua_State* L, string libname, luaL_Reg l, int nup);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_register(lua_State* L, string libname, luaL_Reg l);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaL_getmetafield(lua_State* L, int obj, string e);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaL_callmeta(lua_State* L, int obj, string e);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaL_typerror(lua_State* L, int narg, string tname);
-
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaL_argerror(lua_State* L, int numarg, string extramsg);
+    [LuaNativeImport]
+    public static partial void luaL_openlib(lua_State* L, string libname, luaL_Reg l, int nup);
 
     [LuaNativeImport]
-    public static partial nint luaL_checklstring(lua_State* L, int numArg, ref nint l);
-    public static string? SluaL_checklstring(lua_State* L, int numArg, ref nint l)
-    {
-        return Marshal.PtrToStringAnsi(luaL_checklstring(L, numArg, ref l));
-    }
+    public static partial void luaL_register(lua_State* L, string libname, luaL_Reg l);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern nint luaL_optlstring(lua_State* L, int numArg, string def, ref nint l);
-    public static string? SluaL_optlstring(lua_State* L, int numArg, string def, ref nint l)
-    {
-        return Marshal.PtrToStringAnsi(luaL_optlstring(L, numArg, def, ref l));
-    }
+    [LuaNativeImport]
+    public static partial int luaL_getmetafield(lua_State* L, int obj, string e);
+
+    [LuaNativeImport]
+    public static partial int luaL_callmeta(lua_State* L, int obj, string e);
+
+    [LuaNativeImport]
+    public static partial int luaL_typerror(lua_State* L, int narg, string tname);
+
+    [LuaNativeImport]
+    public static partial int luaL_argerror(lua_State* L, int numarg, string extramsg);
+
+    [LuaNativeImport]
+    public static partial string? luaL_checklstring(lua_State* L, int numArg, ref nint l);
+
+    [LuaNativeImport]
+    public static partial string? luaL_optlstring(lua_State* L, int numArg, string def, ref nint l);
 
     [LuaNativeImport]
     public static partial double luaL_checknumber(lua_State* L, int numArg);
@@ -649,11 +605,11 @@ public unsafe partial class LuaNative
     [LuaNativeImport]
     public static partial void luaL_checkany(lua_State* L, int narg);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaL_newmetatable(lua_State* L, string tname);
+    [LuaNativeImport]
+    public static partial int luaL_newmetatable(lua_State* L, string tname);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern nint luaL_checkudata(lua_State* L, int ud, string tname);
+    [LuaNativeImport]
+    public static partial nint luaL_checkudata(lua_State* L, int ud, string tname);
 
     [LuaNativeImport]
     public static partial void luaL_where(lua_State* L, int lvl);
@@ -662,8 +618,8 @@ public unsafe partial class LuaNative
     //[LuaNativeImport]
     //public static partial int luaL_error(lua_State* L, string fmt, params string[] args);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaL_checkoption(lua_State* L, int narg, string def, string[] lst);
+    [LuaNativeImport]
+    public static partial int luaL_checkoption(lua_State* L, int narg, string def, string[] lst);
 
     public const int LUA_NOREF = -2;
     public const int LUA_REFNIL = -1;
@@ -674,58 +630,50 @@ public unsafe partial class LuaNative
     [LuaNativeImport]
     public static partial void luaL_unref(lua_State* L, int t, int _ref);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaL_loadfile(lua_State* L, string filename);
+    [LuaNativeImport]
+    public static partial int luaL_loadfile(lua_State* L, string filename);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaL_loadbuffer(lua_State* L, string buff, nint sz, string name);
+    [LuaNativeImport]
+    public static partial int luaL_loadbuffer(lua_State* L, string buff, nint sz, string name);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaL_loadstring(lua_State* L, string s);
+    [LuaNativeImport]
+    public static partial int luaL_loadstring(lua_State* L, string s);
 
     [LuaNativeImport]
     public static partial lua_State* luaL_newstate();
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern nint luaL_gsub(lua_State* L, string s, string p, string r);
-    public static string? SluaL_gsub(lua_State* L, string s, string p, string r)
-    {
-        return Marshal.PtrToStringAnsi(luaL_gsub(L, s, p, r));
-    }
+    [LuaNativeImport]
+    public static partial string? luaL_gsub(lua_State* L, string s, string p, string r);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern nint luaL_findtable(lua_State* L, int idx, string fname, int szhint);
-    public static string? SluaL_findtable(lua_State* L, int idx, string fname, int szhint)
-    {
-        return Marshal.PtrToStringAnsi(luaL_findtable(L, idx, fname, szhint));
-    }
+    [LuaNativeImport]
+    public static partial string? luaL_findtable(lua_State* L, int idx, string fname, int szhint);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaL_fileresult(lua_State* L, int stat, string fname);
+    [LuaNativeImport]
+    public static partial int luaL_fileresult(lua_State* L, int stat, string fname);
 
     [LuaNativeImport]
     public static partial int luaL_execresult(lua_State* L, int stat);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaL_loadfilex(lua_State* L, string filename, string? mode);
+    [LuaNativeImport]
+    public static partial int luaL_loadfilex(lua_State* L, string filename, string? mode);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaL_loadbufferx(lua_State* L, string buff, nint sz, string name, string? mode);
+    [LuaNativeImport]
+    public static partial int luaL_loadbufferx(lua_State* L, string buff, nint sz, string name, string? mode);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_traceback(lua_State* L, lua_State* L1, string msg, int level);
+    [LuaNativeImport]
+    public static partial void luaL_traceback(lua_State* L, lua_State* L1, string msg, int level);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_setfuncs(lua_State* L, luaL_Reg[] l, int nup);
+    [LuaNativeImport]
+    public static partial void luaL_setfuncs(lua_State* L, luaL_Reg[] l, int nup);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_pushmodule(lua_State* L, string modename, int sizehint);
+    [LuaNativeImport]
+    public static partial void luaL_pushmodule(lua_State* L, string modename, int sizehint);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern nint luaL_testudata(lua_State* L, int ud, string tname);
+    [LuaNativeImport]
+    public static partial nint luaL_testudata(lua_State* L, int ud, string tname);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_setmetatable(lua_State* L, string tname);
+    [LuaNativeImport]
+    public static partial void luaL_setmetatable(lua_State* L, string tname);
 
     public static void luaL_argcheck(lua_State* L, bool cond, int numarg, string extramsg)
     {
@@ -736,13 +684,13 @@ public unsafe partial class LuaNative
     public static string? luaL_checkstring(lua_State* L, int n)
     {
         nint temp = 0; // NOP
-        return SluaL_checklstring(L, n, ref temp);
+        return luaL_checklstring(L, n, ref temp);
     }
 
     public static string? luaL_optstring(lua_State* L, int n, string d)
     {
         nint temp = 0; // NOP
-        return SluaL_optlstring(L, n, d, ref temp);
+        return luaL_optlstring(L, n, d, ref temp);
     }
 
     public static int luaL_checkint(lua_State* L, int n)
@@ -767,7 +715,7 @@ public unsafe partial class LuaNative
 
     public static string? luaL_typename(lua_State* L, int i)
     {
-        return Slua_typename(L, lua_type(L, i));
+        return lua_typename(L, lua_type(L, i));
     }
 
     public static int luaL_dofile(lua_State* L, string fn)
@@ -833,11 +781,11 @@ public unsafe partial class LuaNative
     [LuaNativeImport]
     public static partial char* luaL_prepbuffer(luaL_Buffer B);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_addlstring(luaL_Buffer B, string s, nint l);
+    [LuaNativeImport]
+    public static partial void luaL_addlstring(luaL_Buffer B, string s, nint l);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern void luaL_addstring(luaL_Buffer B, string s);
+    [LuaNativeImport]
+    public static partial void luaL_addstring(luaL_Buffer B, string s);
 
     [LuaNativeImport]
     public static partial void luaL_addvalue(luaL_Buffer B);
@@ -892,8 +840,8 @@ public unsafe partial class LuaNative
     [LuaNativeImport]
     public static partial int luaopen_ffi(lua_State* L);
 
-    [DllImport(DllName, CallingConvention = Convention)]
-    public static extern int luaopen_string_buffer(lua_State* L);
+    [LuaNativeImport]
+    public static partial int luaopen_string_buffer(lua_State* L);
 
     [LuaNativeImport]
     public static partial void luaL_openlibs(lua_State* L);
