@@ -46,8 +46,8 @@ public class TestMod : Mod
         {
             UpdateCount = 0;
 
-            Benchmarks.BenchmarkPushStringAndPopNew(50_000_000);
-            Benchmarks.BenchmarkPushStringAndPopOld(50_000_000);
+            //Benchmarks.BenchmarkPushStringAndPopNew(50_000_000);
+            //Benchmarks.BenchmarkPushStringAndPopOld(50_000_000);
             //Noita.CellFactory_GetType("water", out nint waterType);
             //Noita.CellFactory_GetType("magic_liquid_protection_all", out nint amborsiaType);
 

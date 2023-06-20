@@ -139,7 +139,6 @@ public class LuaImportsGenerator : IIncrementalGenerator
                     marshalParameterBuilder.AppendLine($"System.Text.Encoding.UTF8.GetBytes(System.MemoryExtensions.AsSpan({stringMarshalingToDo[i]}), __byteSpan{i});");
                     marshalParameterBuilder.AppendLine($"__marshaledString{stringMarshalingToDo[i]} = (nint)System.Runtime.CompilerServices.Unsafe.AsPointer(ref __byteSpan{i}[0]);");
                     marshalParameterBuilder.AppendLine("}");
-                    marshalParameterBuilder.AppendLine();
 
                     marshalParameterFreeBuilder.AppendLine($"if ({stringMarshalingToDo[i]} is not null)");
                     marshalParameterFreeBuilder.AppendLine("{");
