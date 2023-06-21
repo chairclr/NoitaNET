@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.Intrinsics.X86;
 
 namespace NoitaNET.API.Hooks;
 
