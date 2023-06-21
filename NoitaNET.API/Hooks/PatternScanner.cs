@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace NoitaNET.API.Hooks;
 
-public static class PatternScanner
+internal static class PatternScanner
 {
     public static unsafe nint Scan(ProcessModule module, string pattern)
     {
