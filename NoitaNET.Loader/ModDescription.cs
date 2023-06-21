@@ -5,6 +5,7 @@ namespace NoitaNET.Loader;
 /// <summary>
 /// Represents the <![CDATA[<Mod />]]> element in mod.xml
 /// </summary>
+// Must be public because it's use by XmlSerializer
 [XmlType("Mod")]
 public class NoitaModDescriptionXml
 {

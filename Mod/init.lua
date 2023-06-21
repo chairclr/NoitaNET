@@ -49,17 +49,17 @@ end
 function GetAndRegisterAllFunctions()
 
   local function GetAndRegisterFunction(name)
-    local func = getfenv()[funcname]
+    local func = getfenv()[name]
     if not func then return end
     local addr = tonumber(tostring(func):sub(11))
-    lib.RegisterEngineAPIFunction(name addr)
+    lib.RegisterEngineAPIFunction(name, addr)
   end
 
   local docsFile = io.open("tools_modding/lua_api_documentation.txt", "rt")
   for line in docsFile:lines() do
-	local name = line:match("^(%w*)%(")
+	local name = line:match("^([^(\n]+)%(")
 	if name then
-	  GetAndRegisterFunction(name, outfile)
+	  GetAndRegisterFunction(name)
 	end
   end
 end

@@ -4,7 +4,7 @@ using NoitaNET.API;
 
 namespace NoitaNET.Loader;
 
-public static unsafe class Callbacks
+internal static unsafe class Callbacks
 {
     private static IReadOnlyList<Mod> Mods => ModLoadHandler.Mods;
 

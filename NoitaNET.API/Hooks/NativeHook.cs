@@ -5,7 +5,7 @@ namespace NoitaNET.API.Hooks;
 /// <summary>
 /// Represents a hook at the assembly level
 /// </summary>
-public class NativeHook : IDisposable
+internal class NativeHook : IDisposable
 {
     private static HashSet<NativeHook> Pinned = new HashSet<NativeHook>();
 
