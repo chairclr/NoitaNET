@@ -1,4 +1,8 @@
-﻿using NoitaNET.API;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using NoitaNET.API;
+using NoitaNET.API.Hooks;
 using NoitaNET.API.Logging;
 
 namespace NoitaNET.TestMod;
@@ -24,23 +28,23 @@ public class TestMod : Mod
     {
         UpdateCount++;
 
-        RawEngineAPI.EntityGetWithTag("player_unit", out nint[] tempEntities);
+        //RawEngineAPI.EntityGetWithTag("player_unit", out nint[] tempEntities);
 
-        if (tempEntities.Length != 1) return;
+        //if (tempEntities.Length != 1) return;
 
-        RawEngineAPI.EntityGetTransform(tempEntities[0], out double x, out double y, out _, out _, out _);
+        //RawEngineAPI.EntityGetTransform(tempEntities[0], out double x, out double y, out _, out _, out _);
 
-        RawEngineAPI.EntityGetInRadius(x, y, 40, out nint[] entitiesInRadius);
+        //RawEngineAPI.EntityGetInRadius(x, y, 40, out nint[] entitiesInRadius);
 
-        foreach (nint entity in entitiesInRadius)
-        {
-            RawEngineAPI.EntityHasTag(entity, "player_unit", out bool isPlayer);
+        //foreach (nint entity in entitiesInRadius)
+        //{
+        //    RawEngineAPI.EntityHasTag(entity, "player_unit", out bool isPlayer);
 
-            if (isPlayer)
-                continue;
+        //    if (isPlayer)
+        //        continue;
 
-            RawEngineAPI.EntityInflictDamage(entity, 1, "slice", "Test kill", "NORMAL", 0, 0);
-        }
+        //    RawEngineAPI.EntityInflictDamage(entity, 1, "slice", "Test kill", "NORMAL", 0, 0);
+        //}
 
         if (!RunOnce && UpdateCount % BenchmarkEveryNFrames == 0)
         {
