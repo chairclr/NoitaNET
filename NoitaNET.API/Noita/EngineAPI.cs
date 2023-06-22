@@ -32,7 +32,7 @@ public unsafe partial class EngineAPI
         LuaNative.lua_settop(L, 0);
     }
 
-    public void ComponentGetValue2(int component_id, string field_name, out double? number_value)
+    public void ComponentGetValue2(nint component_id, string field_name, out double? number_value)
     {
         LuaNative.lua_pushinteger(L, component_id);
         LuaNative.lua_pushstring(L, field_name);
@@ -50,7 +50,7 @@ public unsafe partial class EngineAPI
         LuaNative.lua_settop(L, 0);
     }
 
-    public void ComponentGetValue2(int component_id, string field_name, out string? string_value)
+    public void ComponentGetValue2(nint component_id, string field_name, out string? string_value)
     {
         LuaNative.lua_pushinteger(L, component_id);
         LuaNative.lua_pushstring(L, field_name);
@@ -68,7 +68,7 @@ public unsafe partial class EngineAPI
         LuaNative.lua_settop(L, 0);
     }
 
-    public void ComponentSetValue2(int component_id, string field_name, nint int_value)
+    public void ComponentSetValue2(nint component_id, string field_name, nint int_value)
     {
         LuaNative.lua_pushinteger(L, component_id);
         LuaNative.lua_pushstring(L, field_name);
@@ -77,7 +77,7 @@ public unsafe partial class EngineAPI
         LuaNative.lua_settop(L, 0);
     }
 
-    public void ComponentSetValue2(int component_id, string field_name, double number_value)
+    public void ComponentSetValue2(nint component_id, string field_name, double number_value)
     {
         LuaNative.lua_pushinteger(L, component_id);
         LuaNative.lua_pushstring(L, field_name);
@@ -86,7 +86,7 @@ public unsafe partial class EngineAPI
         LuaNative.lua_settop(L, 0);
     }
 
-    public void ComponentSetValue2(int component_id, string field_name, string string_value)
+    public void ComponentSetValue2(nint component_id, string field_name, string string_value)
     {
         LuaNative.lua_pushinteger(L, component_id);
         LuaNative.lua_pushstring(L, field_name);
