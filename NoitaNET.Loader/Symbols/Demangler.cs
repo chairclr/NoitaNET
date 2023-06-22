@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Buffers;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -15,8 +16,6 @@ internal static class Demangler
 
     public static string DemangleSymbol(string mangledName)
     {
-        StringBuilder builder = new StringBuilder(1024);
-
         if (mangledName[4] == '?')
         {
             mangledName = mangledName[1..];
@@ -34,14 +33,19 @@ internal static class Demangler
             throw new Exception();
         }
 
-        int bytes = UnDecorateSymbolName($"??_7{mangledName}6B@", builder, builder.Capacity, UnDecorateFlags.UNDNAME_COMPLETE);
+        // * 3 is a good enough estimate?
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(mangledName.Length * 3);
 
-        if (bytes == 0)
+        int bytesWritten = UnDecorateSymbolName($"??_7{mangledName}6B@", buffer, buffer.Length, UnDecorateFlags.UNDNAME_COMPLETE);
+
+        if (bytesWritten == 0)
         {
             throw new Exception();
         }
 
-        string s = builder.ToString();
+        string s = Encoding.UTF8.GetString(buffer.AsSpan().Slice(0, bytesWritten));
+
+        ArrayPool<byte>.Shared.Return(buffer);
 
         if (s.StartsWith("const "))
         {
@@ -56,7 +60,7 @@ internal static class Demangler
     }
 
     [Flags]
-    enum UnDecorateFlags
+    private enum UnDecorateFlags
     {
         UNDNAME_COMPLETE = (0x0000),  // Enable full undecoration
         UNDNAME_NO_LEADING_UNDERSCORES = (0x0001),  // Remove leading underscores from MS extended keywords
@@ -79,7 +83,7 @@ internal static class Demangler
     }
 
     [DllImport("dbghelp.dll", SetLastError = true, PreserveSig = true, CharSet = CharSet.Ansi)]
-    private static extern int UnDecorateSymbolName([In] string DecoratedName, [Out] StringBuilder UnDecoratedName, [In] int UndecoratedLength, [In] UnDecorateFlags Flags);
+    private static extern int UnDecorateSymbolName(string decoratedName, byte[] undecoratedName, int undecoratedLength, UnDecorateFlags flags);
 
     public unsafe ref struct TypeDescriptor
     {
