@@ -15,6 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NoitaNET.Loader.Generators\NoitaNET.Loader.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\NoitaNET.API\NoitaNET.API.csproj" />
   </ItemGroup>
 

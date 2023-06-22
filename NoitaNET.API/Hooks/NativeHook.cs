@@ -5,7 +5,7 @@ namespace NoitaNET.API.Hooks;
 /// <summary>
 /// Represents a hook at the assembly level
 /// </summary>
-internal class NativeHook : IDisposable
+public class NativeHook : IDisposable
 {
     private static HashSet<NativeHook> Pinned = new HashSet<NativeHook>();
 
@@ -70,7 +70,7 @@ internal class NativeHook : IDisposable
 
         Detour = detour;
 
-        Logger.Instance.LogDebug($"Creating NativeHook from 0x{Target} to {Detour}");
+        Logger.Instance.LogDebug($"Creating NativeHook from 0x{Target:X} to 0x{Detour:X}");
 
         MinHook.MH_Status status;
         unsafe
@@ -83,7 +83,7 @@ internal class NativeHook : IDisposable
 
         if (status != MinHook.MH_Status.MH_OK)
         {
-            Logger.Instance.LogError($"Failed to create NativeHook from 0x{Target} to {Detour}: {status}");
+            Logger.Instance.LogError($"Failed to create NativeHook from 0x{Target:X} to 0x{Detour:X}: {status}");
             return;
         }
 
@@ -108,6 +108,9 @@ internal class NativeHook : IDisposable
 
                 MinHook.MH_RemoveHook(Target);
             }
+            
+            Pinned.Remove(this);
+
             Disposed = true;
         }
     }
