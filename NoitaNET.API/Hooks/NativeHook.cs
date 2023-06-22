@@ -108,7 +108,7 @@ public class NativeHook : IDisposable
 
                 MinHook.MH_RemoveHook(Target);
             }
-            
+
             Pinned.Remove(this);
 
             Disposed = true;

@@ -1,15 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Operations;
 
 [Generator(LanguageNames.CSharp)]
 public class MessageHookGenerator : ISourceGenerator
 {
-    private static string[] Functions = new string[] 
+    private static string[] Functions = new string[]
     {
         "ItemChestComponent_HandleMessage_Message_Death",
         "AbilityComponent_HandleMessage_Message_UseAbility",
