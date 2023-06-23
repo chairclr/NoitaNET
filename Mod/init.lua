@@ -72,21 +72,8 @@ lib.WaitForDotnetInit()
 
 local callbackTable = lib.GetCallbacks()
 
-local done = false
-
 function OnWorldPostUpdate()
     callbackTable.OnWorldPostUpdate()
-
-	if not done then
-		local entities = EntityGetWithTag("player_unit")
-
-    if #entities > 0 then
-      done = true
-      local player = entities[1]
-
-      EntityAddComponent2(player, "LuaComponent", {["script_shot"] = "mods/uhhh"})
-    end
-	end
 end
 
 function OnWorldPreUpdate()

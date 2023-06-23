@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using Microsoft.CodeAnalysis;
@@ -121,6 +122,7 @@ public class LuaImportsGenerator : IIncrementalGenerator
             {
                 StringBuilder marshalParameterBuilder = new StringBuilder();
                 StringBuilder marshalParameterFreeBuilder = new StringBuilder();
+                StringBuilder marshalStringSpanBuilder = new StringBuilder();
 
                 for (int i = 0; i < stringMarshalingToDo.Count; i++)
                 {
@@ -135,6 +137,8 @@ public class LuaImportsGenerator : IIncrementalGenerator
                     marshalParameterBuilder.AppendLine($"__marshaledString{stringMarshalingToDo[i]} = (nint)System.Runtime.CompilerServices.Unsafe.AsPointer(ref __byteSpan{i}[0]);");
                     marshalParameterBuilder.AppendLine("}");
 
+                    marshalStringSpanBuilder.AppendLine($"nint __marshaledString{stringMarshalingToDo[i]} = (nint)System.Runtime.CompilerServices.Unsafe.AsPointer(ref System.Runtime.InteropServices.MemoryMarshal.GetReference<byte>({stringMarshalingToDo[i]}));");
+                    
                     marshalParameterFreeBuilder.AppendLine($"if ({stringMarshalingToDo[i]} is not null)");
                     marshalParameterFreeBuilder.AppendLine("{");
                     marshalParameterFreeBuilder.AppendLine($"System.Buffers.ArrayPool<byte>.Shared.Return(__sharedBuffer{i}!);");
@@ -143,6 +147,7 @@ public class LuaImportsGenerator : IIncrementalGenerator
 
                 fnSig.MarshalString = marshalParameterBuilder.ToString();
                 fnSig.MarshalStringFree = marshalParameterFreeBuilder.ToString();
+                fnSig.MarshalStringSpan = marshalStringSpanBuilder.ToString();
             }
 
             return fnSig;
@@ -211,6 +216,36 @@ public class LuaImportsGenerator : IIncrementalGenerator
                     source.AppendLine("return __retvalue;");
                 }
                 source.AppendLine("}");
+
+                if (function.MarshalString is not null)
+                {
+                    source.AppendLine($"public static {function.FunctionReturnType} {function.FunctionName}({function.FunctionParameters.Replace("string ", "System.ReadOnlySpan<byte> ").Replace("string? ", "System.ReadOnlySpan<byte> ")})");
+                    source.AppendLine("{");
+                    if (function.FunctionReturnType == "void")
+                    {
+                        source.AppendLine(function.MarshalStringSpan!);
+                        source.AppendLine($"__Raw_{function.FunctionName}({function.FunctionCallArguments});");
+                    }
+                    else
+                    {
+                        source.AppendLine(function.MarshalStringSpan!);
+
+                        if (function.FunctionReturnType.StartsWith("string"))
+                        {
+                            source.AppendLine($"{function.FunctionReturnType} __retvalue = string.Empty;");
+                            source.AppendLine($"nint __rawRetvalue = __Raw_{function.FunctionName}({function.FunctionCallArguments});");
+                            source.AppendLine($"if (__rawRetvalue == 0) {{ __retvalue = null; }} else {{ __retvalue = System.Text.Encoding.UTF8.GetString(System.Runtime.InteropServices.MemoryMarshal.CreateReadOnlySpanFromNullTerminated((byte*)__rawRetvalue)); }} ");
+                        }
+                        else
+                        {
+                            source.AppendLine($"{function.FunctionReturnType} __retvalue = __Raw_{function.FunctionName}({function.FunctionCallArguments});");
+                        }
+
+                        source.AppendLine("return __retvalue;");
+                    }
+                    source.AppendLine("}");
+                }
+
             }
 
             source.AppendLine("}");
@@ -219,5 +254,5 @@ public class LuaImportsGenerator : IIncrementalGenerator
         });
     }
 
-    private record struct LuaFunctionNameSignatureTuple(string FunctionName, string FunctionReturnType, string FunctionParameters, string FunctionCallArguments, string FunctionPointerSignature, string? MarshalString, string? MarshalStringFree);
+    private record struct LuaFunctionNameSignatureTuple(string FunctionName, string FunctionReturnType, string FunctionParameters, string FunctionCallArguments, string FunctionPointerSignature, string? MarshalString, string? MarshalStringFree, string? MarshalStringSpan);
 }

@@ -10,10 +10,24 @@ namespace NoitaNET.API.Noita;
 /// </remarks>
 public unsafe class LuaManager
 {
-    internal readonly LuaNative.lua_State* L;
+    internal readonly ThreadLocal<LuaStateContainer> ThreadLocalLuaState;
+
+    internal readonly ThreadLocal<EngineAPI> ThreadLocalEngineAPI;
 
     public LuaManager()
     {
-        L = LuaNative.luaL_newstate();
+        ThreadLocalLuaState = new ThreadLocal<LuaStateContainer>(() => new LuaStateContainer());
+
+        ThreadLocalEngineAPI = new ThreadLocal<EngineAPI>(() => new EngineAPI(ThreadLocalLuaState.Value!));
+    }
+
+    internal class LuaStateContainer
+    {
+        internal readonly LuaNative.lua_State* L;
+
+        public LuaStateContainer()
+        {
+            L = LuaNative.luaL_newstate();
+        }
     }
 }

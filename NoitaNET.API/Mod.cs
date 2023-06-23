@@ -12,6 +12,8 @@ namespace NoitaNET.API;
 /// </remarks>
 public abstract unsafe class Mod
 {
+    internal static List<Mod> Mods = new List<Mod>();
+
     /// <summary>
     /// The name of the mod, as specified in mod.xml
     /// </summary>
@@ -24,19 +26,12 @@ public abstract unsafe class Mod
 
     // We use ThreadLocal here because the user might try to access the RawEngineAPI from another thread
     // Lua states are NOT thread safe
-    private readonly ThreadLocal<LuaManager> ThreadLocalLuaManager;
-
-    private readonly ThreadLocal<EngineAPI> ThreadLocalEngineAPI;
-
-    /// <summary>
-    /// A thread-safe Lua environment manager
-    /// </summary>
-    public LuaManager LuaManager => ThreadLocalLuaManager.Value!;
+    public readonly LuaManager LuaManager;
 
     /// <summary>
     /// A thread-safe interface to interact with the raw Noita C API
     /// </summary>
-    public EngineAPI RawEngineAPI => ThreadLocalEngineAPI.Value!;
+    public EngineAPI RawEngineAPI => LuaManager.ThreadLocalEngineAPI.Value!;
 
     public Mod(string name, string description)
     {
@@ -44,9 +39,9 @@ public abstract unsafe class Mod
 
         Description = description;
 
-        ThreadLocalLuaManager = new ThreadLocal<LuaManager>(() => new LuaManager());
+        LuaManager = new LuaManager();
 
-        ThreadLocalEngineAPI = new ThreadLocal<EngineAPI>(() => new EngineAPI(LuaManager));
+        Mods.Add(this);
     }
 
     /// <summary>

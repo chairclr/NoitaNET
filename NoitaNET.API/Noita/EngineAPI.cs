@@ -1,4 +1,6 @@
-﻿using NoitaNET.API.Lua;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using NoitaNET.API.Lua;
 
 namespace NoitaNET.API.Noita;
 
@@ -9,7 +11,7 @@ public unsafe partial class EngineAPI
 {
     private readonly LuaNative.lua_State* L;
 
-    public EngineAPI(LuaManager luaManager)
+    internal EngineAPI(LuaManager.LuaStateContainer luaManager)
     {
         L = luaManager.L;
     }
@@ -88,6 +90,16 @@ public unsafe partial class EngineAPI
 
     public void ComponentSetValue2(nint component_id, string field_name, string string_value)
     {
+        LuaNative.lua_pushinteger(L, component_id);
+        LuaNative.lua_pushstring(L, field_name);
+        LuaNative.lua_pushstring(L, string_value);
+        EngineAPIFunctionTable.ComponentSetValue2(L);
+        LuaNative.lua_settop(L, 0);
+    }
+
+    public void ComponentSetValue2(nint component_id, string field_name, Span<byte> string_value)
+    {
+
         LuaNative.lua_pushinteger(L, component_id);
         LuaNative.lua_pushstring(L, field_name);
         LuaNative.lua_pushstring(L, string_value);

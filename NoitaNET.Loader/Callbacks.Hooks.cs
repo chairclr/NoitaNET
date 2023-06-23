@@ -1,8 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System.Buffers;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
+using NoitaNET.API;
 using NoitaNET.API.Hooks;
 using NoitaNET.API.Logging;
 using NoitaNET.Loader.Symbols;
@@ -33,8 +36,8 @@ internal unsafe partial class Callbacks
     {
         private nint DataPointer = 0;
         private fixed byte SsoBuffer[12];
-        public nint Capacity = 0;
         public nint Size = 0;
+        public nint Capacity = 0;
 
         public nint Data => IsSSO ? (nint)Unsafe.AsPointer(ref DataPointer) : DataPointer;
 
@@ -53,12 +56,30 @@ internal unsafe partial class Callbacks
 
         basic_string* mhm = (basic_string*)yeah;
 
-        if (mhm != null && mhm->Size > 0)
+        if (mhm != null && mhm->Size > 0 && mhm->Capacity > 0)
         {
-            Logger.Instance.LogDebug($"PATH??: {Marshal.PtrToStringUTF8(mhm->Data)}");
-        }
+            // Check for if the first byte of the string is :
+            if (*(byte*)mhm->Data == ':')
+            {
+                Span<byte> bytes = new Span<byte>((void*)mhm->Data, (int)mhm->Size);
 
-        OLuaComponent_HandleMessage_Message_Shot(pThis, param_1, param_2, param_3);
+                MessageListenerPassthroughData data = new MessageListenerPassthroughData(bytes.Slice(1));
+
+                delegate* managed<Mod, void> function = (delegate* managed<Mod, void>)data.Function;
+
+                function(data.ModObject);
+            }
+            else
+            {
+                Logger.Instance.LogDebug($"Calling Original");
+                OLuaComponent_HandleMessage_Message_Shot(pThis, param_1, param_2, param_3);
+            }
+        }
+        else
+        {
+            Logger.Instance.LogDebug($"Calling Original");
+            OLuaComponent_HandleMessage_Message_Shot(pThis, param_1, param_2, param_3);
+        }
     }
 
     static Callbacks()

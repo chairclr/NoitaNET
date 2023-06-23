@@ -1,9 +1,11 @@
 ﻿using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using NoitaNET.API;
 using NoitaNET.API.Hooks;
 using NoitaNET.API.Logging;
+using NoitaNET.API.Lua;
 
 namespace NoitaNET.TestMod;
 
@@ -24,13 +26,41 @@ public class TestMod : Mod
         Benchmarks = new Benchmarks(RawEngineAPI);
     }
 
+    public void X()
+    {
+        Logger.Instance.LogDebug("yeah");
+    }
+
     public override unsafe void OnWorldPostUpdate()
     {
         UpdateCount++;
 
-        //RawEngineAPI.EntityGetWithTag("player_unit", out nint[] tempEntities);
+        if (!RunOnce)
+        {
+            //RawEngineAPI.EntityGetWithTag("player_unit", out nint[] tempEntities);
 
-        //if (tempEntities.Length != 1) return;
+            //if (tempEntities.Length != 1) return;
+
+            //RunOnce = true;
+
+            //nint player = tempEntities[0];
+
+            //RawEngineAPI.EntityAddComponent(player, "LuaComponent", out nint id);
+
+            ////MethodInfo method = typeof(TestMod).GetMethod("X", BindingFlags.Public | BindingFlags.Instance)!;
+            //Delegate dx = X;
+            //nint x = dx.GetFunctionPointer();
+
+            //byte[] bytes = new byte[16 + 2];
+
+            //bytes[0] = (byte)':';
+
+            //MessageListenerPassthroughData data = new MessageListenerPassthroughData(x, this);
+
+            //data.CopyToString(bytes.AsSpan(1));
+
+            //RawEngineAPI.ComponentSetValue2(id, "script_shot", bytes);
+        }
 
         //RawEngineAPI.EntityGetTransform(tempEntities[0], out double x, out double y, out _, out _, out _);
 
