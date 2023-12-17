@@ -24,7 +24,7 @@ See [NoitaNET.TestMod](/NoitaNET.TestMod/) for an example of this
 Your mod entry point class must:
  - Be public
  - Inhereit from `NoitaNET.API.Mod`
- - Have a [NoitaNET.API.ModEntryAttribute]
+ - Have a `[NoitaNET.API.ModEntryAttribute]`
  - Be the only class in the assembly that matches the above conditions
 
 Example mod entry point:
